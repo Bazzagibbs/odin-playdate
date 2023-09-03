@@ -5,6 +5,15 @@ ROWS        :: 240
 ROWSIZE     :: 52
 SCREEN_RECT :: Rect{0, 0, COLUMNS, ROWS}
 
+Handle          :: distinct rawptr
+
+Bitmap          :: distinct Handle
+Bitmap_Table    :: distinct Handle
+Font            :: distinct Handle
+Font_Data       :: distinct Handle
+Font_Page       :: distinct Handle
+Font_Glyph      :: distinct Handle
+
 Rect :: struct {
     left    : i32, 
     right   : i32, // not inclusive
@@ -66,12 +75,4 @@ Polygon_Fill_Rule :: enum {
     non_zero,
     even_odd,
 }
-
-
-Bitmap          :: distinct rawptr
-Bitmap_Table    :: distinct rawptr
-Font            :: distinct rawptr
-Font_Data       :: distinct rawptr
-Font_Page       :: distinct rawptr
-Font_Glyph      :: distinct rawptr
 

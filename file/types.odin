@@ -2,6 +2,8 @@ package playdate_file
 
 File :: distinct rawptr
 
+EOF :: 0
+
 Open_Modes :: bit_set[Open_Mode]
 
 Open_Mode :: enum {

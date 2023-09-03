@@ -38,7 +38,7 @@ clear :: proc(color: Color)
 set_background_color :: proc(color: Solid_Color)
 
 // DEPRECATED in favor of set_stencil_image, which adds a "tile" flag
-set_stencil :: proc(stencil: ^Bitmap)
+// set_stencil :: proc(stencil: ^Bitmap)
 
 set_draw_mode :: proc(draw_mode: Bitmap_Draw_Mode)
 set_draw_offset :: proc(delta_x, delta_y: i32)
@@ -77,11 +77,39 @@ get_bitmap_data :: proc(bitmap: ^Bitmap, width, height, row_bytes: ^i32, mask: [
 clear_bitmap :: proc(bitmap: ^Bitmap, background_color: Color)
 rotated_bitmap :: proc(bitmap: ^Bitmap, rotation, x_scale, y_scale: f32, allocated_size: ^i32) -> ^Bitmap
 
+new_bitmap_table :: proc(count, width, height: i32) -> ^Bitmap_Table
+free_bitmap_table :: proc(table: ^Bitmap_Table)
+load_into_bitmap_table :: proc()
+
 load_font :: proc(path: cstring, out_error: ^cstring) -> ^Font
 get_font_page :: proc(font: ^Font, c: u32) -> ^Font_Page
 get_page_glyph :: proc(page: ^Font_Page, c: u32, bitmap: ^^Bitmap) -> (glyph: ^Font_Glyph, advance: bool)
-get_glyph_kerning :: proc()
-get_text_width :: proc()
+get_glyph_kerning :: proc(glyph: ^Font_Glyph, glyph_code, next_code: u32) -> i32
+get_text_width :: proc(font: ^Font, text: cstring, encoding: String_Encoding, tracking: i32) -> i32
 
-set_stencil_image :: proc(stencil: ^Bitmap, tile: bool)
+get_frame :: proc() -> []u8
+get_display_frame :: proc() -> []u8
+// Only valid in simulator
+get_debug_bitmap :: proc() -> ^Bitmap
+copy_frame_buffer_bitmap :: proc() -> ^Bitmap
+mark_updated_rows :: proc(start, end: i32)
+display :: proc()
 
+set_color_to_pattern :: proc(color: ^Color, bitmap: ^Bitmap, x, y: i32) // since 1.0
+check_mask_collision :: proc(bitmap_1: ^Bitmap, x_1, y_1: i32, flip_1: Bitmap_Flip, bitmap2: ^Bitmap, x_2, y_2: i32, flip_2: Bitmap_Flip) -> i32 // bool? // since 1.0
+
+set_screen_clip_rect :: proc(x, y, width, height: i32) // since 1.1
+
+fill_polygon :: proc(points: [][2]i32, color: Color, fill_rule: Polygon_Fill_Rule) // since 1.1.1
+get_font_height :: proc(font: ^Font) -> u8 // since 1.1.1
+
+get_display_buffer_bitmap :: proc() -> ^Bitmap // since 1.7
+draw_rotated_bitmap :: proc(bitmap: ^Bitmap, x, y: i32, rotation, x_center, y_center, x_scale, y_scale: f32) // since 1.7
+set_text_leading :: proc(line_height_adjustment: i32) // since 1.7
+
+set_bitmap_mask :: proc(bitmap, mask: ^Bitmap) -> i32 // bool? // since 1.8
+get_bitmap_mask :: proc(bitmap: ^Bitmap) -> ^Bitmap // since 1.8
+
+set_stencil_image :: proc(stencil: ^Bitmap, tile: i32) // bool? // since 1.10
+
+make_font_from_data :: proc(data: ^Font_Data, wide: i32) // bool? //since 1.12

@@ -1,10 +1,28 @@
 # Odin-Playdate
 
-Odin-lang API for the [Playdate SDK](https://play.date/dev/), used to develop games for the Playdate handheld game system.
+Odin-lang API bindings for the [Playdate SDK](https://play.date/dev/), used to develop games for the Playdate handheld game system.
 
-While the Odin procedures are documented in the package, the original documentation for the C API can be found [here](https://sdk.play.date/2.0.3/Inside%20Playdate%20with%20C.html).
+While this package is documented, the original [C API documentation can be found here](https://sdk.play.date/2.0.3/Inside%20Playdate%20with%20C.html).
+
+## Differences from the C API
+
+Some minor changes have been made to make use of Odin's features: 
+
+- Procedures with `out` parameters instead use multiple return values.
+- `int` success/fail return flags instead use `(ok: bool)` returns.
+- Procedures that encode a failure state as a specific value (e.g. "Returns -1 on failure") now also return `ok = false` in addition to the encoded state
+- Procedures that take a buffer pointer + length to populate (e.g. `file.read(...)`) instead take a slice
+
 
 ## Prerequisites
 
 1. Download the [Playdate SDK](https://play.date/dev/) for your development platform. 
 2. Make sure you have the `PLAYDATE_SDK` environment variable set to the directory you installed it to.
+
+## Creating a Playdate application
+
+WIP
+
+## Compiling for the Playdate
+
+WIP
