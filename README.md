@@ -26,3 +26,23 @@ WIP
 ## Compiling for the Playdate
 
 WIP
+
+## Contributing
+
+Please feel free to contribute! Here is a list of the API features:
+
+- ➕ Implemented
+- ➖ Partially implemented (see Notes)
+- ❌ Not implemented
+
+| Package       | C bindings | Odin-ified | Notes |
+|---------------|:----------:|:----------:|-------|
+| `display`     |  ❌        |  ➕        |       |
+| `file`        |  ❌        |  ➕        |       |
+| `graphics`    |  ❌        |  ➕        |       |
+| `json`        |  ❌        |  ❌        |       |
+| `lua`         |  ❌        |  ❌        |       |
+| `scoreboards` |  ❌        |  ➕        |       |
+| `sound`       |  ❌        |  ❌        |       |
+| `sprite`      |  ❌        |  ❌        |       |
+| `system`      |  ❌        |  ❌        |       |
