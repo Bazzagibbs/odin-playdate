@@ -1,8 +1,8 @@
 package playdate_file
 
 // Returns human-readable text describing the most recent error (usually indicated by a `ok == false` return from a filesystem function).
-get_error :: proc() -> cstring {
-    panic("Not implemented")
+get_error :: #force_inline proc "c" () -> cstring {
+    return vtable.get_error()
 }
 
 // Calls the given callback function for every file at path. 
@@ -14,31 +14,31 @@ get_error :: proc() -> cstring {
 // If `show_hidden` is true, files beginning with a period will be included; otherwise, they are skipped. 
 // 
 // Returns false if no folder exists at `path` or it can't be opened.
-list_files :: proc(path: cstring, callback: List_Files_Callback, user_data: rawptr, show_hidden: bool) -> (ok: bool) {
-    panic("Not implemented")
+list_files :: #force_inline proc "c" (path: cstring, callback: List_Files_Callback, userdata: rawptr, show_hidden: bool) -> (ok: bool) {
+    return vtable.list_files(path, callback, userdata, i32(show_hidden)) != -1
 }
 
 // Populates the struct `file_stat` with information about the file at path.
-stat :: proc(path: cstring, file_stat: ^Stat) -> (ok: bool) {
-    panic("Not implemented")
+stat :: #force_inline proc "c" (path: cstring, file_stat: ^Stat) -> (ok: bool) {
+    return vtable.stat(path, file_stat) != -1
 }
 
 // Creates the given path in the Data/<gameid> folder. It does not create intermediate folders. 
-mkdir :: proc(path: cstring) -> (ok: bool) {
-    panic("Not implemented")
+mkdir :: #force_inline proc "c" (path: cstring) -> (ok: bool) {
+    return vtable.mkdir(path) != -1
 }
 
 // Deletes the file at `path`. 
 //
 // If `recursive` is true and the target path is a folder, this deletes everything inside the folder 
 // (including folders, folders inside those, and so on) as well as the folder itself.
-unlink :: proc(name: cstring, recursive: bool) -> (ok: bool){
-    panic("Not implemented")
+unlink :: #force_inline proc "c" (name: cstring, recursive: bool) -> (ok: bool){
+    return vtable.unlink(name, i32(recursive)) != -1
 }
 
 // Renames the file at `from` to `to`. It will overwrite the file at to without confirmation. It does not create intermediate folders. 
-rename :: proc(from, to: cstring) -> (ok: bool) {
-    panic("Not implemented")
+rename :: #force_inline proc "c" (from, to: cstring) -> (ok: bool) {
+    return vtable.rename(from, to) != -1
 }
 
 // Opens a handle for the file at path. 
@@ -49,40 +49,45 @@ rename :: proc(from, to: cstring) -> (ok: bool) {
 // `.write` and `.append` always write to the data folder. `ok` will return false if a file at path cannot be opened, and `file.get_err()` will describe the error. 
 //
 // The filesystem has a limit of 64 simultaneous open files.
-open :: proc(name: cstring, mode: Open_Modes) -> (file: ^File, ok: bool) {
-    panic("Not implemented")
+open :: #force_inline proc "c" (name: cstring, mode: Open_Modes) -> (file: ^File, ok: bool) {
+    file = vtable.open(name, mode)
+    return file, file != nil
 }
 
 // Closes the given file handle. 
-close :: proc(file: ^File) -> (ok: bool) {
-    panic("Not implemented")
+close :: #force_inline proc "c" (file: ^File) -> (ok: bool) {
+    return vtable.close(file) != -1
 }
 
 // Reads bytes from the file into the specified buffer, up to the length of the buffer. 
 //
 // If ok, returns the number of bytes read (0 indicating end of file).
-read :: proc(file: ^File, buffer: []byte) -> (bytes_read: i32, ok: bool) {
-    panic("Not implemented")
+read :: #force_inline proc "c" (file: ^File, buffer: []byte) -> (bytes_read: i32, ok: bool) {
+    bytes_read = vtable.read(file, raw_data(buffer), u32(len(buffer)))
+    return bytes_read, bytes_read != -1
 }
 
 
 // Writes the buffer of bytes buf to the file. 
 //
 // If ok, returns the number of bytes written
-write :: proc(file: ^File, buffer: []byte) -> i32 {
-    panic("Not implemented")
+write :: #force_inline proc "c" (file: ^File, buffer: []byte) -> (bytes_written: i32, ok: bool) {
+    bytes_written = vtable.write(file, raw_data(buffer), u32(len(buffer)))
+    return bytes_written, bytes_written != -1
 }
 
 // Flushes the output buffer of file immediately. 
 //
 // If ok, returns the number of bytes written.
-flush :: proc(file: ^File) -> (bytes_written: i32, ok: bool) {
-    panic("Not implemented")
+flush :: #force_inline proc "c" (file: ^File) -> (bytes_written: i32, ok: bool) {
+    bytes_written = vtable.flush(file)
+    return bytes_written, bytes_written != -1
 }
 
 // If ok, returns the current read/write offset in the given file handle.
-tell :: proc(file: ^File) -> (current_offset: i32, ok: bool) {
-    panic("Not implemented")
+tell :: #force_inline proc "c" (file: ^File) -> (current_offset: i32, ok: bool) {
+    current_offset = vtable.tell(file)
+    return current_offset, current_offset != -1
 }
 
 // Sets the read/write offset in the given file handle to `position`, relative to the `whence` seek mode. 
@@ -90,6 +95,6 @@ tell :: proc(file: ^File) -> (current_offset: i32, ok: bool) {
 // * `.set` is relative to the beginning of the file.
 // * `.cur` is relative to the current position of the file pointer.
 // * `.end` is relative to the end of the file.  
-seek :: proc(file: ^File, position: i32, whence: Seek_Mode) -> (ok: bool){
-    panic("Not implemented")
+seek :: #force_inline proc "c" (file: ^File, position: i32, whence: Seek_Mode) -> (ok: bool){
+    return vtable.seek(file, position, i32(whence)) != -1
 }

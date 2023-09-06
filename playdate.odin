@@ -1,5 +1,8 @@
 package playdate
 
+import "core:runtime"
+import "core:log"
+
 import "display"
 import "file"
 import "graphics"
@@ -10,22 +13,13 @@ import "scoreboards"
 // import "sprite"
 import "system"
 
-System_Event :: enum {
-    init,
-    init_lua,
-    lock,
-    unlock,
-    pause,
-    resume,
-    terminate,
-    key_pressed,
-    key_released,
-    low_power,
-}
+odin_context := playdate_context()
+
+playdate_context :: common.playdate_context
 
 Api :: struct { 
-    // system_vtable      : ^system.VTable,
-    // file_vtable        : ^file.VTable,
+    system_vtable      : ^system.VTable,
+    file_vtable        : ^file.VTable,
     // graphics_vtable    : ^graphics.VTable,
     // sprite_vtable      : ^sprite.VTable,
     display_vtable     : ^display.VTable,
@@ -36,8 +30,8 @@ Api :: struct {
 }
 
 init :: proc "c" (api: ^Api) {
-    // system.vtable       = api.system_vtable
-    // file.vtable         = api.file_vtable
+    system.vtable       = api.system_vtable
+    file.vtable         = api.file_vtable
     // graphics.vtable     = api.graphics_vtable
     // sprite.vtable       = api.sprite_vtable
     display.vtable      = api.display_vtable
@@ -46,4 +40,3 @@ init :: proc "c" (api: ^Api) {
     // json_vtable         = api.json_vtable
     // scoreboards_vtable  = api.scoreboards_vtable
 }
-

@@ -1,18 +1,18 @@
 package playdate_graphics
 
+import "../common"
+
 COLUMNS     :: 400
 ROWS        :: 240
 ROWSIZE     :: 52
 SCREEN_RECT :: Rect{0, 0, COLUMNS, ROWS}
 
-Handle          :: distinct rawptr
-
-Bitmap          :: distinct Handle
-Bitmap_Table    :: distinct Handle
-Font            :: distinct Handle
-Font_Data       :: distinct Handle
-Font_Page       :: distinct Handle
-Font_Glyph      :: distinct Handle
+Bitmap          :: common.Bitmap // Used by System
+Bitmap_Table    :: distinct common.Handle
+Font            :: distinct common.Handle
+Font_Data       :: distinct common.Handle
+Font_Page       :: distinct common.Handle
+Font_Glyph      :: distinct common.Handle
 
 Rect :: struct {
     left    : i32, 

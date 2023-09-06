@@ -35,5 +35,6 @@ Peripheral :: enum u16 {
     accelerometer   = 0,
 }
 
-Callback_Proc :: proc "contextless" (user_data: rawptr) -> i32 // return 0 when done
-Menu_Item_Callback_Proc :: proc "contextless" (user_data: rawptr) -> i32 // return 0 when done
+Callback_Proc :: #type proc() -> (should_update_display: bool)
+
+Menu_Item_Callback_Proc :: #type proc "c" (user_ptr: rawptr)

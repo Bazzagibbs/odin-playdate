@@ -14,7 +14,7 @@ Open_Mode :: enum {
 }
 
 Stat :: struct {
-    is_directory                            : bool,
+    is_directory                            : b32,
     size                                    : u32,
     year, month, day, hour, minute, second  : i32,
 }
