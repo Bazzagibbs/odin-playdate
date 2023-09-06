@@ -7,7 +7,7 @@ ROWS        :: 240
 ROWSIZE     :: 52
 SCREEN_RECT :: Rect{0, 0, COLUMNS, ROWS}
 
-Bitmap          :: common.Bitmap // Used by System
+Bitmap          :: distinct common.Handle // Used by System
 Bitmap_Table    :: distinct common.Handle
 Font            :: distinct common.Handle
 Font_Data       :: distinct common.Handle

@@ -1,5 +1,7 @@
 package playdate_system
 
+import "core:runtime"
+
 _playdate_allocator_proc :: proc(allocator_data: rawptr, mode: runtime.Allocator_Mode, 
                         size, alignment: int, 
                         old_memory: rawptr, old_size: int, loc := #caller_location) -> (data: []byte, err: runtime.Allocator_Error) {

@@ -15,7 +15,7 @@ import "system"
 
 odin_context := playdate_context()
 
-playdate_context :: common.playdate_context
+playdate_context :: system.playdate_context
 
 Api :: struct { 
     system_vtable      : ^system.VTable,

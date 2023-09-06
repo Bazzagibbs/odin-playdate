@@ -2,7 +2,7 @@ package playdate_system
 
 import "core:runtime"
 import "core:strings"
-import "../common"
+import gfx "../graphics"
 
 
 // Allocates heap space if ptr is nil, else reallocates the given pointer. 
@@ -321,13 +321,29 @@ clear_i_cache :: #force_inline proc "contextless" () {
 
 // =============================
 
+// Get a context configured for Playdate applications
+playdate_context :: proc "contextless" () -> runtime.Context {
+    c: runtime.Context
+    c.allocator = runtime.Allocator {
+        procedure = _playdate_allocator_proc,
+        data = nil,
+    }
+
+    c.logger = runtime.Logger {
+        procedure = _playdate_logger_proc,
+        data = nil,
+    }
+
+    return c
+}
+
 @(private)
 _user_update_proc: Callback_Proc
 
 // Sets up Odin context before calling user-specified update procedure.
 @(private)
 _internal_update_callback :: proc "c" (userdata: rawptr) -> i32 {
-    context = common.playdate_context()
+    context = playdate_context()
     context.user_ptr = userdata
     return i32(_user_update_proc())
 }
