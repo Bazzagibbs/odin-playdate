@@ -2,10 +2,12 @@ package playdate_graphics
 
 import "../common"
 
-COLUMNS     :: 400
-ROWS        :: 240
-ROWSIZE     :: 52
-SCREEN_RECT :: Rect{0, 0, COLUMNS, ROWS}
+Rect            :: common.Rect
+
+LCD_COLUMNS     :: common.LCD_COLUMNS
+LCD_ROWS        :: common.LCD_ROWS
+LCD_ROWSIZE     :: common.LCD_ROWSIZE
+LCD_SCREEN_RECT :: common.LCD_RECT 
 
 Bitmap          :: distinct common.Handle // Used by System
 Bitmap_Table    :: distinct common.Handle
@@ -13,13 +15,6 @@ Font            :: distinct common.Handle
 Font_Data       :: distinct common.Handle
 Font_Page       :: distinct common.Handle
 Font_Glyph      :: distinct common.Handle
-
-Rect :: struct {
-    left    : i32, 
-    right   : i32, // not inclusive
-    top     : i32, 
-    bottom  : i32, // not inclusive
-}
 
 Bitmap_Draw_Mode :: enum {
     copy,

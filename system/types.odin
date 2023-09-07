@@ -1,6 +1,6 @@
 package playdate_system
 
-Buttons :: bit_set[Button]
+Buttons :: bit_set[Button; u32]
 
 Button :: enum {
     left    = 0,
@@ -29,12 +29,12 @@ Date_Time :: struct {
 
 Menu_Item :: distinct rawptr
 
-Peripherals :: bit_set[Peripheral]
+Peripherals :: bit_set[Peripheral; u32]
 
 Peripheral :: enum u16 {
     accelerometer   = 0,
 }
 
-Callback_Proc :: #type proc() -> (should_update_display: bool)
+Callback_Proc :: #type proc "odin" () -> (should_update_display: bool)
 
 Menu_Item_Callback_Proc :: #type proc "c" (user_ptr: rawptr)

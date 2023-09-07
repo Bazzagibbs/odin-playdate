@@ -57,4 +57,4 @@ Please feel free to contribute! Here is a list of the API features:
 | `scoreboards` |  ❌        |  ➖        |       |
 | `sound`       |  ❌        |  ❌        |       |
 | `sprite`      |  ❌        |  ❌        |       |
-| `system`      |  ➖        |  ➖        | Needed to test |
+| `system`      |  ➕        |  ➖        | Callbacks still take `userdata` pointers. MenuItem callbacks are contextless. |

@@ -4,7 +4,7 @@ File :: distinct rawptr
 
 EOF :: 0
 
-Open_Modes :: bit_set[Open_Mode]
+Open_Modes :: bit_set[Open_Mode; u32]
 
 Open_Mode :: enum {
     read       = 0,

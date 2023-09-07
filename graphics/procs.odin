@@ -70,9 +70,9 @@ draw_text_string :: proc(text: string, encoding: String_Encoding = .utf8, x, y: 
 
 new_bitmap :: proc(width, height: i32, background_color: Color) -> Bitmap
 free_bitmap :: proc(bitmap: Bitmap)
-load_bitmap :: proc(path: cstring, out_error: ^cstring) -> Bitmap
+load_bitmap :: proc(path: cstring) -> (bitmap: Bitmap, err: cstring)
 copy_bitmap :: proc(bitmap: Bitmap) -> Bitmap
-load_into_bitmap :: proc(path: cstring, bitmap: Bitmap, out_error: ^cstring)
+load_into_bitmap :: proc(path: cstring, bitmap: Bitmap) -> (err: cstring)
 get_bitmap_data :: proc(bitmap: Bitmap, width, height, row_bytes: ^i32, mask: [^]u8, data: [^]u8)
 clear_bitmap :: proc(bitmap: Bitmap, background_color: Color)
 rotated_bitmap :: proc(bitmap: Bitmap, rotation, x_scale, y_scale: f32, allocated_size: ^i32) -> Bitmap
@@ -81,7 +81,7 @@ new_bitmap_table :: proc(count, width, height: i32) -> Bitmap_Table
 free_bitmap_table :: proc(table: Bitmap_Table)
 load_into_bitmap_table :: proc()
 
-load_font :: proc(path: cstring, out_error: ^cstring) -> Font
+load_font :: proc(path: cstring) -> (font: Font, err: cstring)
 get_font_page :: proc(font: Font, c: u32) -> Font_Page
 get_page_glyph :: proc(page: Font_Page, c: u32, bitmap: ^Bitmap) -> (glyph: Font_Glyph, advance: bool)
 get_glyph_kerning :: proc(glyph: Font_Glyph, glyph_code, next_code: u32) -> i32

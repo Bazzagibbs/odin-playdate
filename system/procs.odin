@@ -3,6 +3,7 @@ package playdate_system
 import "core:runtime"
 import "core:strings"
 import gfx "../graphics"
+import "../common"
 
 
 // Allocates heap space if ptr is nil, else reallocates the given pointer. 
@@ -76,6 +77,7 @@ draw_fps :: #force_inline proc "contextless" (x, y: i32) {
 // 
 // The `user_ptr` parameter will be provided to the `update` callback as `context.user_ptr`.
 set_update_callback :: #force_inline proc "contextless" (update: Callback_Proc, user_ptr: rawptr = nil) {
+    _user_update_proc = update
     vtable.set_update_callback(_internal_update_callback, user_ptr)
 }
 
@@ -88,8 +90,9 @@ set_update_callback :: #force_inline proc "contextless" (update: Callback_Proc, 
 // Note: at the nominal frame rate of 50ms, fast button presses can be missed if you
 // just poll the instantaneous (current) state.
 get_button_state :: #force_inline proc "contextless" () -> (current, pushed, released: Buttons) {
-    vtable.get_button_state(&current, &pushed, &released)
-    return
+    b0, b1, b2: Buttons
+    vtable.get_button_state(&b0, &b1, &b2)
+    return b0, b1, b2
 }
 
 // By default, the accelerometer is disabled to save (a small amount of) power. 
@@ -153,7 +156,7 @@ set_auto_lock_disabled :: #force_inline proc "contextless" (disabled: bool) {
 // animate to a position offset left by xoffset pixels as the menu is animated in.
 // 
 // This function could be called in response to the `.pause` event in your implementation of `eventHandler()`.
-set_menu_image :: #force_inline proc "contextless" (bitmap: common.Bitmap, x_offset: i32 = 0) {
+set_menu_image :: #force_inline proc "contextless" (bitmap: gfx.Bitmap, x_offset: i32 = 0) {
     vtable.set_menu_image(bitmap, x_offset)
 }
 
@@ -321,30 +324,15 @@ clear_i_cache :: #force_inline proc "contextless" () {
 
 // =============================
 
-// Get a context configured for Playdate applications
-playdate_context :: proc "contextless" () -> runtime.Context {
-    c: runtime.Context
-    c.allocator = runtime.Allocator {
-        procedure = _playdate_allocator_proc,
-        data = nil,
-    }
-
-    c.logger = runtime.Logger {
-        procedure = _playdate_logger_proc,
-        data = nil,
-    }
-
-    return c
-}
-
 @(private)
 _user_update_proc: Callback_Proc
 
 // Sets up Odin context before calling user-specified update procedure.
 @(private)
 _internal_update_callback :: proc "c" (userdata: rawptr) -> i32 {
-    context = playdate_context()
+    context = common.global_context
     context.user_ptr = userdata
-    return i32(_user_update_proc())
+    user_return_val := _user_update_proc()
+    return i32(user_return_val)
 }
 
