@@ -24,7 +24,7 @@ Proc_Fill_Rect          :: #type proc "c" (x, y, width, height: i32, color: Colo
 Proc_Draw_Ellipse       :: #type proc "c" (x, y, width, height, line_width: i32, start_angle, end_angle: f32, color: Color)
 Proc_Fill_Ellipse       :: #type proc "c" (x, y, width, height: i32, start_angle, end_angle: f32, color: Color)
 Proc_Draw_Scaled_Bitmap :: #type proc "c" (bitmap: Bitmap, x, y: i32, x_scale, y_scale: f32)
-Proc_Draw_Text          :: #type proc "c" (text: cstring, len: u32, encoding: String_Encoding, x, y: i32) 
+Proc_Draw_Text          :: #type proc "c" (text: cstring, len: u32, encoding: String_Encoding, x, y: i32) -> i32
 Proc_New_Bitmap         :: #type proc "c" (width, height: i32, bg_color: Color) -> Bitmap 
 Proc_Free_Bitmap        :: #type proc "c" (bitmap: Bitmap) 
 Proc_Load_Bitmap        :: #type proc "c" (path: cstring, out_err: ^cstring) -> Bitmap

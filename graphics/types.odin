@@ -16,6 +16,16 @@ Font_Data       :: distinct common.Handle
 Font_Page       :: distinct common.Handle
 Font_Glyph      :: distinct common.Handle
 
+// Pixel data is in 1 bit per pixel packed format, in Most Significant Bit order.
+// The high bit of the first byte in `data` is the top-left pixel of the image.
+Bitmap_Data :: struct {
+    width: i32,
+    height: i32,
+    row_bytes: i32,
+    mask: []u8,
+    data: []u8, 
+}
+
 Bitmap_Draw_Mode :: enum {
     copy,
     white_transparent,

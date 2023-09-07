@@ -22,8 +22,7 @@ default_logger :: system.playdate_logger
 Api :: struct { 
     system_vtable      : ^system.VTable,
     file_vtable        : ^file.VTable,
-    graphics_vtable    : rawptr,
-    // graphics_vtable    : ^graphics.VTable,
+    graphics_vtable    : ^graphics.VTable,
     sprite_vtable      : rawptr,
     // sprite_vtable      : ^sprite.VTable,
     display_vtable     : ^display.VTable,
@@ -43,7 +42,7 @@ init :: proc(api: ^Api, ctx := context) {
 
     system.vtable       = api.system_vtable
     file.vtable         = api.file_vtable
-    // graphics.vtable     = api.graphics_vtable
+    graphics.vtable     = api.graphics_vtable
     // sprite.vtable       = api.sprite_vtable
     display.vtable      = api.display_vtable
     // sound.vtable        = api.sound_vtable

@@ -46,6 +46,7 @@ get_info :: #force_inline proc "contextless" (video_player: Player) -> Player_In
     vtable.get_info(video_player, &pi.width, &pi.height, &pi.frame_rate, &pi.frame_count, &pi.current_frame)
     return pi
 }
+
 // Gets the rendering destination for the video player. 
 //
 // If no rendering context has been set, ALLOCATES a context bitmap with the same dimensions as the video.
