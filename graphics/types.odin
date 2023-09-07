@@ -9,7 +9,7 @@ LCD_ROWS        :: common.LCD_ROWS
 LCD_ROWSIZE     :: common.LCD_ROWSIZE
 LCD_SCREEN_RECT :: common.LCD_RECT 
 
-Bitmap          :: distinct common.Handle // Used by System
+Bitmap          :: common.Bitmap // Used by System and Video
 Bitmap_Table    :: distinct common.Handle
 Font            :: distinct common.Handle
 Font_Data       :: distinct common.Handle

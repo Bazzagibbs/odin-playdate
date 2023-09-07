@@ -17,4 +17,6 @@ LCD_RECT        :: Rect{0, 0, LCD_COLUMNS, LCD_ROWS}
 
 Handle :: distinct rawptr
 
+Bitmap :: distinct Handle
+
 global_context: runtime.Context
