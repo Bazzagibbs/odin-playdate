@@ -41,7 +41,7 @@ WIP
 
 ## Contributing
 
-Please feel free to contribute! Here is a list of the API features:
+Please feel free to contribute! Here is the current implementation status of each API feature:
 
 - ➕ Implemented
 - ➖ Partially implemented (see Notes)
@@ -51,7 +51,7 @@ Please feel free to contribute! Here is a list of the API features:
 |---------------|:----------:|:----------:|-------|
 | `display`     |  ➕        |  ➕        | Untested |
 | `file`        |  ➕        |  ➕        | Untested |
-| `graphics`    |  ❌        |  ➖        | Needed to test |
+| `graphics`    |  ➕        |  ➕        |       |
 | `json`        |  ❌        |  ❌        |       |
 | `lua`         |  ❌        |  ❌        |       |
 | `scoreboards` |  ❌        |  ➖        |       |
