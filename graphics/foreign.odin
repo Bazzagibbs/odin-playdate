@@ -2,7 +2,13 @@ package playdate_graphics
 
 import "video"
 
-Proc_Clear                  :: #type proc "c" (color: Color)
+@(private)
+_Color_Internal :: struct #raw_union {
+    solid_color : Solid_Color,
+    pattern     : ^Pattern
+}
+
+Proc_Clear                  :: #type proc "c" (color: _Color_Internal)
 Proc_Set_Background_Color   :: #type proc "c" (color: Solid_Color) 
 Proc_Set_Stencil            :: #type proc "c" (stencil: Bitmap)
 Proc_Set_Draw_Mode          :: #type proc "c" (draw_mode: Bitmap_Draw_Mode)
@@ -17,21 +23,21 @@ Proc_Pop_Context            :: #type proc "c" ()
 
 Proc_Draw_Bitmap        :: #type proc "c" (bitmap: Bitmap, x, y: i32, flip: Bitmap_Flip)
 Proc_Tile_Bitmap        :: #type proc "c" (bitmap: Bitmap, x, y, width, height: i32, flip: Bitmap_Flip)
-Proc_Draw_Line          :: #type proc "c" (x1, y1, x2, y2, width: i32, color: Color)
-Proc_Fill_Triangle      :: #type proc "c" (x1, y1, x2, y2, x3, y3: i32, color: Color)
-Proc_Draw_Rect          :: #type proc "c" (x, y, width, height: i32, color: Color)
-Proc_Fill_Rect          :: #type proc "c" (x, y, width, height: i32, color: Color)
-Proc_Draw_Ellipse       :: #type proc "c" (x, y, width, height, line_width: i32, start_angle, end_angle: f32, color: Color)
-Proc_Fill_Ellipse       :: #type proc "c" (x, y, width, height: i32, start_angle, end_angle: f32, color: Color)
+Proc_Draw_Line          :: #type proc "c" (x1, y1, x2, y2, width: i32, color: _Color_Internal)
+Proc_Fill_Triangle      :: #type proc "c" (x1, y1, x2, y2, x3, y3: i32, color: _Color_Internal)
+Proc_Draw_Rect          :: #type proc "c" (x, y, width, height: i32, color: _Color_Internal)
+Proc_Fill_Rect          :: #type proc "c" (x, y, width, height: i32, color: _Color_Internal)
+Proc_Draw_Ellipse       :: #type proc "c" (x, y, width, height, line_width: i32, start_angle, end_angle: f32, color: _Color_Internal)
+Proc_Fill_Ellipse       :: #type proc "c" (x, y, width, height: i32, start_angle, end_angle: f32, color: _Color_Internal)
 Proc_Draw_Scaled_Bitmap :: #type proc "c" (bitmap: Bitmap, x, y: i32, x_scale, y_scale: f32)
 Proc_Draw_Text          :: #type proc "c" (text: cstring, len: u32, encoding: String_Encoding, x, y: i32) -> i32
-Proc_New_Bitmap         :: #type proc "c" (width, height: i32, bg_color: Color) -> Bitmap 
+Proc_New_Bitmap         :: #type proc "c" (width, height: i32, bg_color: _Color_Internal) -> Bitmap 
 Proc_Free_Bitmap        :: #type proc "c" (bitmap: Bitmap) 
 Proc_Load_Bitmap        :: #type proc "c" (path: cstring, out_err: ^cstring) -> Bitmap
 Proc_Copy_Bitmap        :: #type proc "c" (bitmap: Bitmap) -> Bitmap
 Proc_Load_Into_Bitmap   :: #type proc "c" (path: cstring, bitmap: Bitmap, out_err: ^cstring) 
 Proc_Get_Bitmap_Data    :: #type proc "c" (bitmap: Bitmap, width, height, row_bytes: ^i32, mask, data: [^]u8)
-Proc_Clear_Bitmap       :: #type proc "c" (bitmap: Bitmap, bg_color: Color)
+Proc_Clear_Bitmap       :: #type proc "c" (bitmap: Bitmap, bg_color: _Color_Internal)
 Proc_Rotated_Bitmap     :: #type proc "c" (bitmap: Bitmap, rotation, x_scale, y_scale: f32, alloced_size: ^i32) -> Bitmap
 
 Proc_New_Bitmap_Table       :: #type proc "c" (count, width, height: i32) -> Bitmap_Table
@@ -53,14 +59,14 @@ Proc_Copy_Frame_Buffer_Bitmap   :: #type proc "c" () -> Bitmap
 Proc_Mark_Updated_Rows          :: #type proc "c" (start, end: i32) 
 Proc_Display                    :: #type proc "c" ()
 
-Proc_Set_Color_To_Pattern :: #type proc "c" (color: Color, bitmap: Bitmap, x, y: i32) 
+Proc_Set_Color_To_Pattern :: #type proc "c" (color: _Color_Internal, bitmap: Bitmap, x, y: i32) 
 Proc_Check_Mask_Collision :: #type proc "c" (bitmap_1: Bitmap, x_1, y_1: i32, flip_1: Bitmap_Flip, bitmap_2: Bitmap, x_2, y_2: i32, flip_2: Bitmap_Flip, rect: Rect) -> i32
 
 // 1.1
 Proc_Set_Screen_Clip_Rect :: #type proc "c" (x, y, width, height: i32)
 
 // 1.1.1
-Proc_Fill_Polygon       :: #type proc "c" (n_points: i32, coords: [^]i32, color: Color, fill_rule: Polygon_Fill_Rule) 
+Proc_Fill_Polygon       :: #type proc "c" (n_points: i32, coords: [^]i32, color: _Color_Internal, fill_rule: Polygon_Fill_Rule) 
 Proc_Get_Font_Height    :: #type proc "c" (font: Font) -> u8
 
 // 1.7

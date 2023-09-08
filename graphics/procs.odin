@@ -40,7 +40,7 @@ make_pattern_opaque :: #force_inline proc "contextless" (r0, r1, r2, r3, r4, r5,
 
 // Clears the entire display, filling it with `color`.
 clear :: #force_inline proc "contextless" (color: Color) {
-    vtable.clear(color)
+    vtable.clear(_color_to_internal_color(color))
 }
 
 
@@ -123,29 +123,29 @@ tile_bitmap :: #force_inline proc "contextless" (bitmap: Bitmap, x, y, width, he
 
 // Draws a line from `x_1, y_1` to `x_2, y_2` with a stroke width of `width`.
 draw_line :: #force_inline proc "contextless" (x_1, y_1, x_2, y_2, width: i32, color: Color) {
-    vtable.draw_line(x_1, y_1, x_2, y_2, width, color)
+    vtable.draw_line(x_1, y_1, x_2, y_2, width, _color_to_internal_color(color))
 }
 
 // Draws a filled triangle with points at `x_1, y_1`, `x_2, y_2`, and `x_3, y_3`.
 fill_triangle :: #force_inline proc "contextless" (x_1, y_1, x_2, y_2, x_3, y_3: i32, color: Color) {
-    vtable.fill_triangle(x_1, y_1, x_2, y_2, x_3, y_3, color)
+    vtable.fill_triangle(x_1, y_1, x_2, y_2, x_3, y_3, _color_to_internal_color(color))
 }
 
 // Draws a `width` by `height` rect at `x, y`.
 draw_rect :: #force_inline proc "contextless" (x, y, width, height: i32, color: Color) {
-    vtable.draw_rect(x, y, width, height, color)
+    vtable.draw_rect(x, y, width, height, _color_to_internal_color(color))
 }
 
 // Draws a filled `width` by `height` rect at `x, y`.
 fill_rect :: #force_inline proc "contextless" (x, y, width, height: i32, color: Color) {
-    vtable.fill_rect(x, y, width, height, color)
+    vtable.fill_rect(x, y, width, height, _color_to_internal_color(color))
 }
 // Draws an ellipse inside the rectangle `{x, y, width, height}` of width `line_width` (inset from the rectangle bounds). 
 // 
 // If `start_angle != end_angle`, this draws an arc between the given angles. 
 // Angles are given in degrees, clockwise from due north.
 draw_ellipse :: #force_inline proc "contextless" (x, y, width, height, line_width: i32, start_angle, end_angle: f32, color: Color) {
-    vtable.draw_ellipse(x, y, width, height, line_width, start_angle, end_angle, color)
+    vtable.draw_ellipse(x, y, width, height, line_width, start_angle, end_angle, _color_to_internal_color(color))
 }
 
 // Fills an ellipse inside the rectangle `{x, y, width, height}`. 
@@ -153,7 +153,7 @@ draw_ellipse :: #force_inline proc "contextless" (x, y, width, height, line_widt
 // If `start_angle != end_angle`, this draws a wedge/Pacman between the given angles. 
 // Angles are given in degrees, clockwise from due north.
 fill_ellipse :: #force_inline proc "contextless" (x, y, width, height: i32, start_angle, end_angle: f32, color: Color) {
-    vtable.fill_ellipse(x, y, width, height, start_angle, end_angle, color)
+    vtable.fill_ellipse(x, y, width, height, start_angle, end_angle, _color_to_internal_color(color))
 }
 
 // Draws the bitmap scaled to `x_scale` and `y_scale` with its upper-left corner at location `x, y`. 
@@ -171,7 +171,7 @@ draw_text :: #force_inline proc "contextless" (text: cstring, length: u32, encod
 
 // Allocates and returns a new `width` by `height` Bitmap filled with `bg_color`.
 new_bitmap :: #force_inline proc "contextless" (width, height: i32, background_color: Color) -> Bitmap {
-    return vtable.new_bitmap(width, height, background_color)
+    return vtable.new_bitmap(width, height, _color_to_internal_color(background_color))
 }
 
 // Frees the given `bitmap`.
@@ -212,7 +212,7 @@ get_bitmap_data :: #force_inline proc "contextless" (bitmap: Bitmap) -> Bitmap_D
 
 // Clears `bitmap`, filling with the given `background_color`.
 clear_bitmap :: #force_inline proc "contextless" (bitmap: Bitmap, background_color: Color) {
-    vtable.clear_bitmap(bitmap, background_color)
+    vtable.clear_bitmap(bitmap, _color_to_internal_color(background_color))
 }
 
 // Returns a new, rotated and scaled Bitmap based on the given `bitmap`.
@@ -320,7 +320,7 @@ display :: #force_inline proc "contextless" () {
 //
 // Since 1.0
 set_color_to_pattern :: #force_inline proc "contextless" (color: Color, bitmap: Bitmap, x, y: i32) {
-    vtable.set_color_to_pattern(color, bitmap, x, y)
+    vtable.set_color_to_pattern(_color_to_internal_color(color), bitmap, x, y)
 }
 
 // Returns true if any of the opaque pixels in `bitmap_1` when positioned at `x_1, y1` with `flip_1` 
@@ -346,7 +346,7 @@ set_screen_clip_rect :: #force_inline proc "contextless" (x, y, width, height: i
 // Since 1.1.1
 fill_polygon :: #force_inline proc "contextless" (points: []i32, color: Color, fill_rule: Polygon_Fill_Rule = .even_odd) {
     n_points := i32(len(points) / 2)
-    vtable.fill_polygon(n_points, raw_data(points), color, fill_rule)
+    vtable.fill_polygon(n_points, raw_data(points), _color_to_internal_color(color), fill_rule)
 }
 
 // Returns the height of the given font.
@@ -421,6 +421,17 @@ make_font_from_data :: #force_inline proc "contextless" (data: Font_Data, wide: 
 }
 
 
+@(private)
+_color_to_internal_color :: #force_inline proc "contextless" (color: Color) -> _Color_Internal {
+    color_internal: _Color_Internal
+    switch val in color {
+        case Solid_Color:
+            color_internal.solid_color = val
+        case ^Pattern: 
+            color_internal.pattern = val
+    }
+    return color_internal
+}
 
 // ///////////////////////////
 // // Odin procedure groups //
