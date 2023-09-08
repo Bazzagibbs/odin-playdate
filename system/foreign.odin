@@ -119,14 +119,3 @@ VTable :: struct {
     clear_i_cache                   : Proc_Clear_I_Cache,
 }
 
-// @(private)
-// _Callback_Wrapper :: struct {
-//     user_ptr: rawptr,
-//     callback_ptr: Callback_Proc
-// }
-
-// @(private)
-// Menu_Item_Callback_Wrapper :: struct {
-//     user_ptr: rawptr,
-//     callback_ptr: Menu_Item_Callback_Proc
-// }

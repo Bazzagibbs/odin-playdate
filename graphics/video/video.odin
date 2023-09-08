@@ -53,3 +53,13 @@ get_info :: #force_inline proc "contextless" (video_player: Player) -> Player_In
 get_context :: #force_inline proc "contextless" (video_player: Player) -> common.Bitmap {
     return vtable.get_context(video_player)
 }
+
+
+
+// ///////////////////////////
+// // Odin procedure groups //
+// ///////////////////////////
+
+free :: proc {
+    free_player,
+}
