@@ -29,15 +29,44 @@ video.foo()
 ## Prerequisites
 
 1. Download the [Playdate SDK](https://play.date/dev/) for your development platform. 
-2. Make sure you have the `PLAYDATE_SDK` environment variable set to the directory you installed it to.
+2. Make sure you have the `PLAYDATE_SDK_PATH` environment variable set to the directory you installed it to.
 
 ## Creating a Playdate application
 
-WIP
+WIP - Expected to change
+
+Playdate applications are libraries that export the following procedure:
+
+```odin
+@(export)
+eventHandler :: proc "c" (pd_api: ^playdate.Api, event: playdate.System_Event, arg: u32) -> i32
+```
+
+The API can be used in two ways:
+ - By loading the function pointers into the package's vtables with `playdate.init(pd_api)`.
+ - As you would with the C api by passing the `pd_api` handle as userdata.
+
+ Using the latter option may be more difficult and many Odin features will not be available.
+
+`playdate.init()` captures its context and uses it for callbacks where possible, so make sure your context is set up before it is called.
 
 ## Compiling for the Playdate
 
-WIP
+WIP - Expected to change
+
+1. Create an intermediate directory that the shared library will be compiled into, and an output directory, e.g. "./intermediate/" and "./out/"
+2. Compile your Odin project into your intermediate directory with the `-build-mode:shared` option (and `-debug` if desired)
+```sh
+odin build . -out=intermediate/pdex.dll -build-mode:shared
+```
+3. Compile the intermediate directory using the Playdate Compiler, into your output directory
+```sh
+$PLAYDATE_SDK_PATH/bin/pdc intermediate/ out/Game_Name.pdx
+```
+4. Run the simulator with your game
+```sh
+$PLAYDATE_SDK_PATH/bin/PlaydateSimulator out/Game_Name.pdx
+```
 
 ## Contributing
 
@@ -47,14 +76,14 @@ Please feel free to contribute! Here is the current implementation status of eac
 - ➖ Partially implemented (see Notes)
 - ❌ Not implemented
 
-| Package       | C bindings | Odin-ified | Notes |
-|---------------|:----------:|:----------:|-------|
-| `display`     |  ➕        |  ➕        | Untested |
-| `file`        |  ➕        |  ➕        | Untested |
-| `graphics`    |  ➕        |  ➕        |       |
-| `json`        |  ❌        |  ❌        |       |
-| `lua`         |  ❌        |  ❌        |       |
-| `scoreboards` |  ❌        |  ➖        |       |
-| `sound`       |  ❌        |  ❌        |       |
-| `sprite`      |  ❌        |  ❌        |       |
-| `system`      |  ➕        |  ➖        | Callbacks still take `userdata` pointers. MenuItem callbacks are contextless. |
+| Package       | C bindings | Odin-ified | Tests | Notes |
+|---------------|:----------:|:----------:|:-----:|-------|
+| `display`     |  ➕        |  ➕        | ❌   | Untested |
+| `file`        |  ➕        |  ➕        | ❌   | Untested |
+| `graphics`    |  ➕        |  ➕        | ❌   |      |
+| `json`        |  ❌        |  ❌        | ❌   |      |
+| `lua`         |  ❌        |  ❌        | ❌   |      |
+| `scoreboards` |  ➕        |  ➖        | ❌   | Can't test/no documentation - only approved games can use Scoreboards API |
+| `sound`       |  ❌        |  ❌        | ❌   |      |
+| `sprite`      |  ❌        |  ❌        | ❌   |      |
+| `system`      |  ➕        |  ➖        | ❌   | Callbacks still take `userdata` pointers. MenuItem callbacks are contextless. |
