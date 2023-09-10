@@ -82,8 +82,13 @@ Please feel free to contribute! Here is the current implementation status of eac
 | `file`        |  ➕        |  ➕        | ❌   | Untested |
 | `graphics`    |  ➕        |  ➕        | ❌   |      |
 | `json`        |  ❌        |  ❌        | ❌   |      |
-| `lua`         |  ❌        |  ❌        | ❌   |      |
+| `lua`         |  ➕        |  ➖        | ❌   | `register_class` is unsafe, See issue #12|
 | `scoreboards` |  ➕        |  ➖        | ❌   | Can't test/no documentation - only approved games can use Scoreboards API |
 | `sound`       |  ❌        |  ❌        | ❌   |      |
 | `sprite`      |  ❌        |  ❌        | ❌   |      |
 | `system`      |  ➕        |  ➖        | ❌   | Callbacks still take `userdata` pointers. MenuItem callbacks are contextless. |
+
+
+## Other notes
+
+- `pd->lua->registerClass()` takes two null-terminated arrays as parameters (yuck), I'd like to instead be able to pass slices and enforce the null terminators
