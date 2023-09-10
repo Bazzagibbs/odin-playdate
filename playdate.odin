@@ -23,17 +23,14 @@ Api :: struct {
     system_vtable      : ^system.VTable,
     file_vtable        : ^file.VTable,
     graphics_vtable    : ^graphics.VTable,
-    sprite_vtable      : rawptr,
-    // sprite_vtable      : ^sprite.VTable,
+    sprite_vtable      : ^sprite.VTable,
     display_vtable     : ^display.VTable,
     sound_vtable       : rawptr,
     // sound_vtable       : ^sound.VTable,
-    lua_vtable         : rawptr,
-    // lua_vtable         : ^lua.VTable,
+    lua_vtable         : ^lua.VTable,
     json_vtable        : rawptr,
     // json_vtable        : ^json.VTable,
-    scoreboards_vtable : rawptr,
-    // scoreboards_vtable : ^scoreboards.VTable,
+    scoreboards_vtable : ^scoreboards.VTable,
 }
 
 // Load procedures from the Playdate API, and set up a context to be used by callbacks.
@@ -43,11 +40,11 @@ init :: proc(api: ^Api, ctx := context) {
     system.vtable       = api.system_vtable
     file.vtable         = api.file_vtable
     graphics.vtable     = api.graphics_vtable
-    // sprite.vtable       = api.sprite_vtable
+    sprite.vtable       = api.sprite_vtable
     display.vtable      = api.display_vtable
     // sound.vtable        = api.sound_vtable
-    // lua.vtable          = api.lua_vtable 
+    lua.vtable          = api.lua_vtable 
     // json_vtable         = api.json_vtable
-    // scoreboards_vtable  = api.scoreboards_vtable
+    scoreboards_vtable  = api.scoreboards_vtable
 }
 
