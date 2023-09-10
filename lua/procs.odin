@@ -67,7 +67,7 @@ get_arg_type   :: #force_inline proc "contextless" (pos: i32) -> (type: Type, cl
 
 // Returns true if the argument at position `pos` is nil.
 arg_is_nil     :: #force_inline proc "contextless" (pos: i32) -> bool {
-    return vtable.arg_is_nil(pos)
+    return bool(vtable.arg_is_nil(pos))
 }
 
 // Returns the argument at position `pos` as a bool.
@@ -92,7 +92,7 @@ get_arg_string :: #force_inline proc "contextless" (pos: i32) -> cstring {
 
 // Returns the argument at position `pos` as a byte slice.
 get_arg_bytes  :: #force_inline proc "contextless" (pos: i32) -> []byte {
-    length: i32
+    length: u32
     ptr := vtable.get_arg_bytes(pos, &length)
     return ptr[:length]
 }
@@ -137,12 +137,12 @@ push_float     :: #force_inline proc "contextless" (val: f32) {
 
 // Pushes the cstring `str` onto the stack.`
 push_string    :: #force_inline proc "contextless" (str: cstring) {
-    vtable.push_string(val)
+    vtable.push_string(str)
 }
 
 // Like `push_string()`, but pushes an arbitrary byte array to the stack, ignoring `\0` characters.
 push_bytes     :: #force_inline proc "contextless" (bytes: []byte) {
-    vtable.push_bytes(raw_ptr(val), i32(len(val)))
+    vtable.push_bytes(raw_data(bytes), u32(len(bytes)))
 }
 
 // Pushes the Bitmap `bitmap` onto the stack.

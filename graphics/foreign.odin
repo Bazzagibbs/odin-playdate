@@ -1,11 +1,9 @@
 package playdate_graphics
 
-import "video"
-
 @(private)
 _Color_Internal :: struct #raw_union {
     solid_color : Solid_Color,
-    pattern     : ^Pattern
+    pattern     : ^Pattern,
 }
 
 Proc_Clear                  :: #type proc "c" (color: _Color_Internal)
@@ -101,7 +99,7 @@ vtable: ^VTable
 vtable_video: ^VTable_Video
 
 VTable :: struct {
-    video                   : ^video.VTable,
+    video_vtable            : ^VTable_Video,
 
     clear                   : Proc_Clear,
     set_background_color    : Proc_Set_Background_Color,

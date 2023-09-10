@@ -1,7 +1,7 @@
 package playdate_lua
 
 Proc_Add_Function       :: #type proc "c" (f: C_Function, name: cstring, out_err: ^cstring) -> i32
-Proc_Register_Class     :: #type proc "c" (name: cstring, reg: Reg, vals: [^]Value, is_static: i32, out_err: ^cstring) -> i32
+Proc_Register_Class     :: #type proc "c" (name: cstring, reg: [^]Reg, vals: [^]Value, is_static: i32, out_err: ^cstring) -> i32
                          
 Proc_Push_Function      :: #type proc "c" (f: C_Function)
 Proc_Index_Metatable    :: #type proc "c" () -> i32
@@ -17,7 +17,7 @@ Proc_Get_Arg_Bool       :: #type proc "c" (pos: i32) -> i32
 Proc_Get_Arg_Int        :: #type proc "c" (pos: i32) -> i32
 Proc_Get_Arg_Float      :: #type proc "c" (pos: i32) -> f32
 Proc_Get_Arg_String     :: #type proc "c" (pos: i32) -> cstring
-Proc_Get_Arg_Bytes      :: #type proc "c" (pos: i32, out_len: u32) -> [^]byte
+Proc_Get_Arg_Bytes      :: #type proc "c" (pos: i32, out_len: ^u32) -> [^]byte
 Proc_Get_Arg_Object     :: #type proc "c" (pos: i32, type: cstring, out_ud: ^UD_Object) -> rawptr
                          
 Proc_Get_Bitmap         :: #type proc "c" (pos: i32) -> Bitmap
@@ -28,7 +28,7 @@ Proc_Push_Bool          :: #type proc "c" (val: i32)
 Proc_Push_Int           :: #type proc "c" (val: i32)
 Proc_Push_Float         :: #type proc "c" (val: f32)
 Proc_Push_String        :: #type proc "c" (str: cstring)
-Proc_Push_Bytes         :: #type proc "c" (bytes: [^]byte, len: u32)
+Proc_Push_Bytes         :: #type proc "c" (bytes: [^]byte, length: u32)
 Proc_Push_Bitmap        :: #type proc "c" (bitmap: Bitmap)
 Proc_Push_Sprite        :: #type proc "c" (sprite: Sprite)
 

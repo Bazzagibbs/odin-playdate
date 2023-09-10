@@ -8,11 +8,11 @@ import "common"
 import "display"
 import "file"
 import "graphics"
-import "json"
-// import "lua"
+// import "json"
+import "lua"
 import "scoreboards"
 // import "sound"
-// import "sprite"
+import "sprite"
 import "system"
 
 
@@ -37,14 +37,15 @@ Api :: struct {
 init :: proc(api: ^Api, ctx := context) {
     common.global_context = ctx
 
-    system.vtable       = api.system_vtable
-    file.vtable         = api.file_vtable
-    graphics.vtable     = api.graphics_vtable
-    sprite.vtable       = api.sprite_vtable
-    display.vtable      = api.display_vtable
-    // sound.vtable        = api.sound_vtable
-    lua.vtable          = api.lua_vtable 
-    // json_vtable         = api.json_vtable
-    scoreboards_vtable  = api.scoreboards_vtable
+    system.vtable           = api.system_vtable
+    file.vtable             = api.file_vtable
+    graphics.vtable         = api.graphics_vtable
+    graphics.vtable_video   = api.graphics_vtable.video_vtable
+    sprite.vtable           = api.sprite_vtable
+    display.vtable          = api.display_vtable
+    // sound.vtable            = api.sound_vtable
+    lua.vtable              = api.lua_vtable 
+    // json_vtable             = api.json_vtable
+    scoreboards.vtable      = api.scoreboards_vtable
 }
 

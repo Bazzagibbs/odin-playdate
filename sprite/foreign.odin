@@ -84,7 +84,7 @@ Proc_Get_User_Data                  :: #type proc "c" (sprite: Sprite) -> rawptr
 Proc_Set_Stencil_Image              :: #type proc "c" (sprite: Sprite, stencil: Bitmap, tile: i32)
 
 
-
+vtable: ^VTable
 
 
 VTable :: struct {
