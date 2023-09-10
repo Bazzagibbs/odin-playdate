@@ -26,23 +26,8 @@ Bitmap_Data :: struct {
     data: []u8, 
 }
 
-Bitmap_Draw_Mode :: enum {
-    copy,
-    white_transparent,
-    black_transparent,
-    fill_white,
-    fill_black,
-    xor,
-    nxor,
-    inverted,
-}
-
-Bitmap_Flip :: enum {
-    unflipped,
-    flipped_x,
-    flipped_y,
-    flipped_xy,
-}
+Bitmap_Draw_Mode    :: common.Bitmap_Draw_Mode
+Bitmap_Flip         :: common.Bitmap_Flip
 
 Solid_Color :: enum {
     black,

@@ -85,7 +85,7 @@ Please feel free to contribute! Here is the current implementation status of eac
 | `lua`         |  ➕        |  ➖        | ❌   | `register_class` is unsafe, See issue #12|
 | `scoreboards` |  ➕        |  ➖        | ❌   | Can't test/no documentation - only approved games can use Scoreboards API |
 | `sound`       |  ❌        |  ❌        | ❌   |      |
-| `sprite`      |  ❌        |  ❌        | ❌   |      |
+| `sprite`      |  ➕        |  ❌        | ❌   |      |
 | `system`      |  ➕        |  ➖        | ❌   | Callbacks still take `userdata` pointers. MenuItem callbacks are contextless. |
 
 
