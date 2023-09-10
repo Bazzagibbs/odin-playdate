@@ -85,7 +85,20 @@ Proc_Set_Stencil_Image :: #type proc "c" (stencil: Bitmap, tile: i32)
 Proc_Make_Font_From_Data :: #type proc "c" (data: Font_Data, wide: i32) -> Font
 
 
+// Video
+Proc_Load_Video         :: #type proc "c" (path: cstring) -> Video_Player
+Proc_Free_Player        :: #type proc "c" (player: Video_Player) 
+Proc_Set_Context        :: #type proc "c" (player: Video_Player, ctx: Bitmap) -> i32
+Proc_Use_Screen_Context :: #type proc "c" (player: Video_Player)
+Proc_Render_Frame       :: #type proc "c" (player: Video_Player, n: i32) -> i32
+Proc_Get_Error          :: #type proc "c" (player: Video_Player) -> cstring
+Proc_Get_Info           :: #type proc "c" (player: Video_Player, out_width, out_height: ^i32, out_frame_rate: ^f32, out_frame_count, out_current_frame: ^i32)
+Proc_Get_Context        :: #type proc "c" (player: Video_Player) -> Bitmap
+
+
 vtable: ^VTable
+
+vtable_video: ^VTable_Video
 
 VTable :: struct {
     video                   : ^video.VTable,
@@ -166,4 +179,15 @@ VTable :: struct {
 
     // 1.12
     make_font_from_data         : Proc_Make_Font_From_Data,
+}
+
+VTable_Video :: struct {
+    load_video          : Proc_Load_Video,
+    free_player         : Proc_Free_Player,
+    set_context         : Proc_Set_Context,
+    use_screen_context  : Proc_Use_Screen_Context,
+    render_frame        : Proc_Render_Frame,
+    get_error           : Proc_Get_Error,
+    get_info            : Proc_Get_Info,
+    get_context         : Proc_Get_Context,
 }

@@ -433,6 +433,51 @@ _color_to_internal_color :: #force_inline proc "contextless" (color: Color) -> _
     return color_internal
 }
 
+
+
+
+// Opens the `pdv` file at `path` and returns a new video player object for rendering its frames.
+load_video :: #force_inline proc "contextless" (path: cstring) -> Video_Player {
+    return vtable_video.load_video(path)
+}
+
+// Frees the given video player.
+free_video_player :: #force_inline proc "contextless" (video_player: Video_Player) {
+    vtable_video.free_player(video_player)
+}
+
+// Sets the rendering destination for the video player to the given bitmap. 
+// 
+// Returns false on failure, and sets an error message that can be read via `get_error()`.
+set_video_context :: #force_inline proc "contextless" (video_player: Video_Player, ctx: Bitmap) -> bool {
+    return vtable_video.set_context(video_player, ctx) != 0
+}
+
+// Sets the rendering destination for the video player to the screen.
+use_screen_context :: #force_inline proc "contextless" (video_player: Video_Player) {
+    vtable_video.use_screen_context(video_player)
+}
+
+// Returns text describing the most recent error.
+get_error_video :: #force_inline proc "contextless" (video_player: Video_Player) -> cstring {
+    return vtable_video.get_error(video_player)
+}
+
+// Retrieves information about the video.
+get_video_info :: #force_inline proc "contextless" (video_player: Video_Player) -> (info: Video_Player_Info) {
+    vtable_video.get_info(video_player, &info.width, &info.height, &info.frame_rate, &info.frame_count, &info.current_frame)
+    return
+}
+
+// Gets the rendering destination for the video player. 
+//
+// If no rendering context has been set, ALLOCATES a context bitmap with the same dimensions as the video.
+get_video_context :: #force_inline proc "contextless" (video_player: Video_Player) -> Bitmap {
+    return vtable_video.get_context(video_player)
+}
+
+
+
 // ///////////////////////////
 // // Odin procedure groups //
 // ///////////////////////////
@@ -440,4 +485,9 @@ _color_to_internal_color :: #force_inline proc "contextless" (color: Color) -> _
 free :: proc {
     free_bitmap,
     free_bitmap_table,
+    free_video_player,
+}
+
+get_error :: proc {
+    get_error_video,
 }
