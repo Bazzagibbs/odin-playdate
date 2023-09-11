@@ -54,7 +54,7 @@ String_Encoding :: enum {
     _16_bit_le,
 }
 
-Pattern :: distinct [16]u8
+Pattern :: distinct [16]byte
 
 Color :: union {
     Solid_Color,

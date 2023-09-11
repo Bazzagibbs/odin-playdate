@@ -74,7 +74,7 @@ Proc_Overlapping_Sprites                :: #type proc "c" (sprite: Sprite, lengt
 Proc_All_Overlapping_Sprites            :: #type proc "c" (length: ^i32) -> [^]Sprite
 
 // added in 1.7
-Proc_Set_Stencil_Pattern            :: #type proc "c" (sprite: Sprite, pattern: [8]byte)
+Proc_Set_Stencil_Pattern            :: #type proc "c" (sprite: Sprite, pattern: [8]u8)
 Proc_Clear_Stencil                  :: #type proc "c" (sprite: Sprite)
 
 Proc_Set_User_Data                  :: #type proc "c" (sprite: Sprite, userdata: rawptr)
