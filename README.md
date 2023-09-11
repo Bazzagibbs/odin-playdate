@@ -78,13 +78,13 @@ Please feel free to contribute! Here is the current implementation status of eac
 
 | Package       | C bindings | Odin-ified | Tests | Notes |
 |---------------|:----------:|:----------:|:-----:|-------|
-| `display`     |  ➕        |  ➕        | ❌   | Untested |
-| `file`        |  ➕        |  ➕        | ❌   | Untested |
-| `graphics`    |  ➕        |  ➕        | ❌   |      |
-| `json`        |  ❌        |  ❌        | ❌   |      |
+| `display`     |  ➕        |  ➕        | ❌   |       |
+| `file`        |  ➕        |  ➕        | ❌   |       |
+| `graphics`    |  ➕        |  ➕        | ❌   |       |
+| `json`        |  ➕        |  ➖        | ❌   | Need someone to see if it's functional |
 | `lua`         |  ➕        |  ➖        | ❌   | `register_class` is unsafe, See issue #12|
 | `scoreboards` |  ➕        |  ➖        | ❌   | Can't test/no documentation - only approved games can use Scoreboards API |
-| `sound`       |  ❌        |  ❌        | ❌   |      |
+| `sound`       |  ❌        |  ❌        | ❌   |       |
 | `sprite`      |  ➕        |  ➖        | ❌   | Sprite update and draw callbacks are contextless. |
 | `system`      |  ➕        |  ➖        | ❌   | Callbacks still take `userdata` pointers. MenuItem callbacks are contextless. |
 
