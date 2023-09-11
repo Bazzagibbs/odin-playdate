@@ -1,5 +1,7 @@
 package playdate_sound
 
+// If someone is bored enough, feel free to fill out the parameter names :)
+
 vtable: ^VTable
 
 VTable :: struct {
@@ -18,102 +20,103 @@ VTable :: struct {
     instrument:     ^Instrument_VTable,
 
     get_current_time:    #type proc "c" () -> u32,
-    add_source:          #type proc "c" (callback: Audio_Source_Proc, ctx: rawptr, stereo: i32) -> Source,
-    get_default_channel: #type proc "c" (
-    add_channel:         #type proc "c" ( 
-    remove_channel:      #type proc "c" (
-    set_mic_callback:    #type proc "c" (
-    get_headphone_state: #type proc "c" (
-    set_outputs_active:  #type proc "c" (
+    add_source:          #type proc "c" (Audio_Source_Proc, rawptr, i32) -> Source,
+    get_default_channel: #type proc "c" () -> Channel,
+    add_channel:         #type proc "c" (Channel) -> i32,
+    remove_channel:      #type proc "c" (Channel) -> i32,
+    set_mic_callback:    #type proc "c" (Record_Callback, rawptr, i32),
+    get_headphone_state: #type proc "c" (^i32, ^i32, Change_Callback),
+    set_outputs_active:  #type proc "c" (i32, i32),
 
-    remove_source: #type proc "c" (
+    remove_source: #type proc "c" (Source) -> i32,
 
     signal: ^Signal_VTable,
 }
 
 Source_VTable :: struct {
-    set_volume:          #type proc "c" (
-    get_volume:          #type proc "c" (
-    is_playing:          #type proc "c" ( 
-    set_finish_callback: #type proc "c" ( 
+    set_volume:          #type proc "c" (Source, f32, f32),
+    get_volume:          #type proc "c" (Source, ^f32, ^f32),
+    is_playing:          #type proc "c" (Source) -> i32,
+    set_finish_callback: #type proc "c" (Source, Callback_Proc),
 }
 
 File_Player_VTable :: struct {
-    new_player:            #type proc "c" (
-    load_into_player:      #type proc "c" (
-    set_buffer_length:     #type proc "c" ( 
-    play:                  #type proc "c" ( 
-    is_playing:            #type proc "c" ( 
-    pause:                 #type proc "c" ( 
-    stop:                  #type proc "c" ( 
-    set_volume:            #type proc "c" ( 
-    get_volume:            #type proc "c" ( 
-    get_length:            #type proc "c" ( 
-    set_offset:            #type proc "c" ( 
-    set_rate:              #type proc "c" ( 
-    set_loop_range:        #type proc "c" ( 
-    did_underrun:          #type proc "c" ( 
-    set_finish_callback:   #type proc "c" ( 
-    set_loop_callback:     #type proc "c" ( 
-    get_offset:            #type proc "c" ( 
-    get_rate:              #type proc "c" ( 
-    set_stop_on_underrun:  #type proc "c" ( 
-    fade_volume:           #type proc "c" ( 
-    set_mp3_stream_source: #type proc "c" ( 
+    new_player:            #type proc "c" () -> File_Player,
+    free_player:           #type proc "c" (File_Player),
+    load_into_player:      #type proc "c" (File_Player, cstring) -> i32,
+    set_buffer_length:     #type proc "c" (File_Player, f32),
+    play:                  #type proc "c" (File_Player, f32) -> i32,
+    is_playing:            #type proc "c" (File_Player) -> i32,
+    pause:                 #type proc "c" (File_Player),
+    stop:                  #type proc "c" (File_Player),
+    set_volume:            #type proc "c" (File_Player, f32, f32),
+    get_volume:            #type proc "c" (File_Player, ^f32, ^f32),
+    get_length:            #type proc "c" (File_Player) -> f32,
+    set_offset:            #type proc "c" (File_Player, f32),
+    set_rate:              #type proc "c" (File_Player, f32),
+    set_loop_range:        #type proc "c" (File_Player, f32, f32),
+    did_underrun:          #type proc "c" (File_Player) -> i32,
+    set_finish_callback:   #type proc "c" (File_Player, Callback_Proc),
+    set_loop_callback:     #type proc "c" (File_Player, Callback_Proc),
+    get_offset:            #type proc "c" (File_Player) -> f32,
+    get_rate:              #type proc "c" (File_Player) -> f32,
+    set_stop_on_underrun:  #type proc "c" (File_Player, i32),
+    fade_volume:           #type proc "c" (File_Player, f32, f32, i32, Callback_Proc),
+    set_mp3_stream_source: #type proc "c" (File_Player, Data_Source_Proc, rawptr, f32),
 }
 
 Sample_VTable :: struct {
-    new_sample_buffer:    #type proc "c" ( 
-    load_into_sample:     #type proc "c" ( 
-    load:                 #type proc "c" ( 
-    new_sample_from_data: #type proc "c" ( 
-    get_data:             #type proc "c" ( 
-    free_sample:          #type proc "c" ( 
-    get_length:           #type proc "c" ( 
+    new_sample_buffer:    #type proc "c" (i32) -> Sample,
+    load_into_sample:     #type proc "c" (Sample, cstring) -> i32,
+    load:                 #type proc "c" (cstring) -> Sample,
+    new_sample_from_data: #type proc "c" ([^]u8, Format, u32, i32) -> Sample,
+    get_data:             #type proc "c" (Sample, ^[^]u8, Format, ^u32, ^u32),
+    free_sample:          #type proc "c" (Sample),
+    get_length:           #type proc "c" (Sample) -> f32,
 }
 
-// Extends SoundSource
 Sample_Player_VTable :: struct { // Extends SoundSource
-    new_player:          #type proc "c" (
-    free_player:         #type proc "c" (
-    set_sample:          #type proc "c" (
-    play:                #type proc "c" (
-    is_playing:          #type proc "c" (
-    stop:                #type proc "c" (
-    set_volume:          #type proc "c" (
-    get_volume:          #type proc "c" (
-    get_length:          #type proc "c" (
-    set_offset:          #type proc "c" (
-    set_rate:            #type proc "c" (
-    set_play_range:      #type proc "c" (
-    set_finish_callback: #type proc "c" (
-    set_loop_callback:   #type proc "c" (
-    get_offset:          #type proc "c" (
-    get_rate:            #type proc "c" (
-    set_paused:          #type proc "c" (
+    new_player:          #type proc "c" () -> Sample_Player,
+    free_player:         #type proc "c" (Sample_Player),
+    set_sample:          #type proc "c" (Sample_Player, Audio_Sample),
+    play:                #type proc "c" (Sample_Player, i32, f32) -> i32,
+    is_playing:          #type proc "c" (Sample_Player) -> i32,
+    stop:                #type proc "c" (Sample_Player),
+    set_volume:          #type proc "c" (Sample_Player, f32, f32),
+    get_volume:          #type proc "c" (Sample_Player, ^f32, ^f32),
+    get_length:          #type proc "c" (Sample_Player) -> f32,
+    set_offset:          #type proc "c" (Sample_Player, f32),
+    set_rate:            #type proc "c" (Sample_Player, f32),
+    set_play_range:      #type proc "c" (Sample_Player, i32, i32),
+    set_finish_callback: #type proc "c" (Sample_Player, Callback_Proc),
+    set_loop_callback:   #type proc "c" (Sample_Player, Callback_Proc),
+    get_offset:          #type proc "c" (Sample_Player) -> f32,
+    get_rate:            #type proc "c" (Sample_Player) -> f32,
+    set_paused:          #type proc "c" (Sample_Player, i32),
 }
 
 Signal_VTable :: struct {
-    new_signal:       #type proc "c" (
-    free_signal:      #type proc "c" (
-    get_value:        #type proc "c" (
-    set_value_scale:  #type proc "c" (
-    set_value_offset: #type proc "c" (
+    new_signal:       #type proc "c" (Signal_Step_Proc, Signal_Note_On_Proc, Signal_Note_Off_Proc, Signal_Dealloc_Proc, rawptr) -> Synth_Signal,
+    free_signal:      #type proc "c" (Synth_Signal),
+    get_value:        #type proc "c" (Synth_Signal) -> f32,
+    set_value_scale:  #type proc "c" (Synth_Signal, f32),
+    set_value_offset: #type proc "c" (Synth_Signal, f32),
 }
 
 LFO_VTable :: struct {
-    new_lfo:          #type proc "c" (
-    set_type:         #type proc "c" (
-    set_rate:         #type proc "c" (
-    set_phase:        #type proc "c" (
-    set_center:       #type proc "c" (
-    set_depth:        #type proc "c" (
-    set_arpeggiation: #type proc "c" (
-    set_function:     #type proc "c" (
-    set_delay:        #type proc "c" (
-    set_retrigger:    #type proc "c" (
-    get_value:        #type proc "c" (
-    set_global:       #type proc "c" (
+    new_lfo:          #type proc "c" (LFO_Type) -> Synth_LFO,
+    free_lfo:         #type proc "c" (Synth_LFO),
+    set_type:         #type proc "c" (Synth_LFO, LFO_Type),
+    set_rate:         #type proc "c" (Synth_LFO, f32),
+    set_phase:        #type proc "c" (Synth_LFO, f32),
+    set_center:       #type proc "c" (Synth_LFO, f32),
+    set_depth:        #type proc "c" (Synth_LFO, f32),
+    set_arpeggiation: #type proc "c" (Synth_LFO, i32, [^]f32),
+    set_function:     #type proc "c" (Synth_LFO, LFO_Func, rawptr, i32),
+    set_delay:        #type proc "c" (Synth_LFO, f32, f32),
+    set_retrigger:    #type proc "c" (Synth_LFO, i32),
+    get_value:        #type proc "c" (Synth_LFO) -> f32,
+    set_global:       #type proc "c" (Synth_LFO, i32),
 }
 
 Envelope_VTable :: struct {

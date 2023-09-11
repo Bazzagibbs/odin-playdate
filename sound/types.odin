@@ -5,6 +5,9 @@ import "../common"
 AUDIO_FRAMES_PER_CYCLE :: 512
 
 Source              :: distinct common.Handle
+File_Player         :: distinct Source
+Audio_Sample        :: distinct common.Handle
+Sample_Player       :: distinct Source
 Synth               :: distinct common.Handle
 Synth_Instrument    :: distinct common.Handle
 Synth_LFO           :: distinct common.Handle
@@ -86,4 +89,7 @@ Sequence_Finished_Callback  :: #type proc "c" (seq: Sequence, user_data: rawptr)
 Effect_Proc                 :: #type proc "c" (effect: Effect, left, right: ^i32, n_samples, buf_active: i32) -> i32
 Audio_Source_Proc           :: #type proc "c" (ctx: rawptr, left, right: ^i16, length: i32) -> i32
 Record_Callback             :: #type proc "c" (ctx: rawptr, buffer: ^i16, length: i32) -> i32 // data is mono
+Change_Callback             :: #type proc "c" (headphone: i32, mic: i32)
 
+Data_Source_Proc            :: #type proc "c" (data: [^]u8, bytes: i32, user_data: rawptr) -> i32
+LFO_Func                    :: #type proc "c" (Synth_LFO, rawptr) -> f32
