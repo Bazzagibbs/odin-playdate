@@ -8,7 +8,7 @@ import "common"
 import "display"
 import "file"
 import "graphics"
-// import "json"
+import "json"
 import "lua"
 import "scoreboards"
 // import "sound"
@@ -28,8 +28,7 @@ Api :: struct {
     sound_vtable       : rawptr,
     // sound_vtable       : ^sound.VTable,
     lua_vtable         : ^lua.VTable,
-    json_vtable        : rawptr,
-    // json_vtable        : ^json.VTable,
+    json_vtable        : ^json.VTable,
     scoreboards_vtable : ^scoreboards.VTable,
 }
 
@@ -45,7 +44,7 @@ init :: proc(api: ^Api, ctx := context) {
     display.vtable          = api.display_vtable
     // sound.vtable            = api.sound_vtable
     lua.vtable              = api.lua_vtable 
-    // json_vtable             = api.json_vtable
+    json.vtable             = api.json_vtable
     scoreboards.vtable      = api.scoreboards_vtable
 }
 
