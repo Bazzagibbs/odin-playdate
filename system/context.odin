@@ -19,18 +19,15 @@ _Level_Headers := [?]string{
 // Get a context configured for Playdate applications.
 playdate_context :: proc "contextless" () -> runtime.Context {
     c: runtime.Context
-    c.allocator.procedure = _playdate_allocator_proc
-    c.allocator.data = nil
 
-    c.temp_allocator.procedure = runtime.default_temp_allocator_proc
-    c.temp_allocator.data = &runtime.global_default_temp_allocator_data
+    c.allocator = playdate_allocator()
+    c.temp_allocator = playdate_temp_allocator()
 
     when !ODIN_DISABLE_ASSERT {
         c.assertion_failure_proc = _playdate_assertion_failure_proc
     }
-    
-    c.logger.procedure = runtime.default_logger_proc
-    c.logger.data = nil
+   
+    c.logger = playdate_logger() 
     
     return c
 }
@@ -44,6 +41,12 @@ playdate_allocator :: #force_inline proc "contextless" () -> runtime.Allocator {
     }
 }
 
+playdate_temp_allocator :: #force_inline proc "contextless" () -> runtime.Allocator {
+    return runtime.Allocator {
+        procedure = runtime.default_temp_allocator_proc,
+        data = &runtime.global_default_temp_allocator_data,
+    }
+}
 
 // Logger that outputs to the Playdate's console
 playdate_logger :: #force_inline proc "contextless" () -> runtime.Logger {
