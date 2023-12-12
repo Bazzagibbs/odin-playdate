@@ -279,13 +279,13 @@ get_text_width :: #force_inline proc "contextless" (font: Font, text: cstring, l
 // Bytes are MSB-ordered; i.e., the pixel in column 0 is the 0x80 bit of the first byte of the row.
 get_frame :: #force_inline proc "contextless" () -> []u8 {
     buf := vtable.get_frame()
-    return buf[:LCD_ROWSIZE * LCD_COLUMNS]
+    return buf[:LCD_ROWS * LCD_ROWSIZE]
 }
 
 // Returns the raw bits in the display buffer, the last completed frame.
 get_display_frame :: #force_inline proc "contextless" () -> []u8 {
     buf := vtable.get_display_frame()
-    return buf[:LCD_ROWSIZE * LCD_COLUMNS]
+    return buf[:LCD_ROWS * LCD_ROWSIZE]
 }
 
 // Only valid in the Simulator, returns the debug framebuffer as a bitmap. 
