@@ -4,6 +4,11 @@ File :: distinct rawptr
 
 EOF :: 0
 
+Result :: enum {
+    ok      = 0,
+    error   = -1,
+}
+
 Open_Modes :: bit_set[Open_Mode; u32]
 
 Open_Mode :: enum {
@@ -28,4 +33,4 @@ Seek_Mode :: enum {
     end = 2,
 }
 
-List_Files_Callback :: proc(path: cstring, user_data: rawptr) 
+List_Files_Callback :: #type proc "c" (path: cstring, user_data: rawptr) 
