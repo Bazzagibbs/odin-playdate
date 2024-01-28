@@ -6,7 +6,7 @@ import "core:runtime"
 LCD_COLUMNS     :: 400
 LCD_ROWS        :: 240
 LCD_ROWSIZE     :: 52
-LCD_RECT        :: Rect{0, 0, LCD_COLUMNS, LCD_ROWS}
+LCD_SCREEN_RECT :: Rect{0, 0, LCD_COLUMNS, LCD_ROWS}
 
 // .right and .bottom are not inclusive
 Rect :: struct {

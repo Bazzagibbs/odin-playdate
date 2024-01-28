@@ -76,17 +76,17 @@ Please feel free to contribute! Here is the current implementation status of eac
 - ➖ Partially implemented (see Notes)
 - ❌ Not implemented
 
-| Package       | C bindings | Odin-ified | Tests | Notes |
-|---------------|:----------:|:----------:|:-----:|-------|
-| `display`     |  ➕        |  ➕        | ❌   |       |
-| `file`        |  ➕        |  ➕        | ❌   |       |
-| `graphics`    |  ➕        |  ➕        | ❌   |       |
-| `json`        |  ➕        |  ➖        | ❌   | Need someone to see if it's functional |
-| `lua`         |  ➕        |  ➖        | ❌   | `register_class` is unsafe, See issue #12|
-| `scoreboards` |  ➕        |  ➖        | ❌   | Can't test/no documentation - only approved games can use Scoreboards API |
-| `sound`       |  ➕        |  ❌        | ❌   | This is a HUGE package. C binding parameters are unnamed. |
-| `sprite`      |  ➕        |  ➖        | ❌   | Sprite update and draw callbacks are contextless. |
-| `system`      |  ➕        |  ➖        | ❌   | Callbacks still take `userdata` pointers. MenuItem callbacks are contextless. |
+| Package       | C bindings | Tests | Notes |
+|---------------|:----------:|:-----:|-------|
+| `display`     |  ➕        | ❌   |       |
+| `file`        |  ➕        | ❌   |       |
+| `graphics`    |  ➕        | ❌   |       |
+| `json`        |  ➕        | ❌   | Need someone to see if it's functional |
+| `lua`         |  ➕        | ❌   | `register_class` is unsafe, See issue #12|
+| `scoreboards` |  ➕        | ❌   | Can't test/no documentation - only approved games can use Scoreboards API |
+| `sound`       |  ➕        | ❌   | This is a HUGE package. C binding parameters are unnamed. |
+| `sprite`      |  ➕        | ❌   | Sprite update and draw callbacks are contextless. |
+| `system`      |  ➕        | ❌   | Callbacks still take `userdata` pointers. MenuItem callbacks are contextless. |
 
 
 ## Other notes

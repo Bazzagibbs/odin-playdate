@@ -7,7 +7,7 @@ Rect            :: common.Rect
 LCD_COLUMNS     :: common.LCD_COLUMNS
 LCD_ROWS        :: common.LCD_ROWS
 LCD_ROWSIZE     :: common.LCD_ROWSIZE
-LCD_SCREEN_RECT :: common.LCD_RECT 
+LCD_SCREEN_RECT :: common.LCD_SCREEN_RECT 
 
 Bitmap          :: common.Bitmap // Used by System and Video
 Bitmap_Table    :: distinct common.Handle
@@ -56,7 +56,7 @@ String_Encoding :: enum {
 
 Pattern :: distinct [16]byte
 
-Color :: union {
+Color :: struct #raw_union {
     Solid_Color,
     ^Pattern,
 }
@@ -64,15 +64,5 @@ Color :: union {
 Polygon_Fill_Rule :: enum {
     non_zero,
     even_odd,
-}
-
-Video_Player :: distinct common.Handle
-
-Video_Player_Info :: struct {
-    width           : i32, 
-    height          : i32,
-    frame_rate      : f32,
-    frame_count     : i32, 
-    current_frame   : i32,
 }
 
