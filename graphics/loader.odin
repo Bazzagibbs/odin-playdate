@@ -1,6 +1,7 @@
 package playdate_graphics
 
 import "core:c"
+import "video"
 
 //   ////////////////
 //  // PROC TYPES //
@@ -86,6 +87,8 @@ Proc_Get_Text_Tracking          :: #type proc "c" () -> c.int
 // ////////////////
 
 Api_Procs :: struct {
+    video                    : ^video.Api_Procs,
+
     clear                    : Proc_Clear,
     set_background_color     : Proc_Set_Background_Color,
     set_stencil              : Proc_Set_Stencil,
