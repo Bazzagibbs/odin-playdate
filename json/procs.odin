@@ -3,6 +3,15 @@ import "core:c"
 import "core:strconv"
 import "core:strings"
 import "../system"
+import "../common"
+import ".."
+
+
+Value_Type :: common.Json_Value_Type
+Value      :: common.Json_Value
+Reader     :: common.Json_Reader
+Encoder    :: common.Json_Encoder
+Decoder    :: common.Json_Decoder
 
 
 // Value accessors
@@ -45,9 +54,9 @@ string_value     :: #force_inline proc "contextless" (value: Value) -> cstring {
 
 
 set_table_decode :: #force_inline proc(decoder: ^Decoder, 
-        will_decode_sublist         : Proc_Decoder_Will_Decode_Sublist, 
-        did_decode_table_value      : Proc_Decoder_Did_Decode_Table_Value, 
-        did_decode_sublist          : Proc_Decoder_Did_Decode_Sublist) {
+        will_decode_sublist         : common.Proc_Json_Decoder_Will_Decode_Sublist, 
+        did_decode_table_value      : common.Proc_Json_Decoder_Did_Decode_Table_Value, 
+        did_decode_sublist          : common.Proc_Json_Decoder_Did_Decode_Sublist) {
 
     decoder.did_decode_table_value  = did_decode_table_value
     decoder.did_decode_array_value  = nil
@@ -56,9 +65,9 @@ set_table_decode :: #force_inline proc(decoder: ^Decoder,
 }
 
 set_array_decode :: #force_inline proc(decoder: ^Decoder, 
-        will_decode_sublist         : Proc_Decoder_Will_Decode_Sublist, 
-        did_decode_array_value      : Proc_Decoder_Did_Decode_Array_Value, 
-        did_decode_sublist          : Proc_Decoder_Did_Decode_Sublist) {
+        will_decode_sublist         : common.Proc_Json_Decoder_Will_Decode_Sublist, 
+        did_decode_array_value      : common.Proc_Json_Decoder_Did_Decode_Array_Value, 
+        did_decode_sublist          : common.Proc_Json_Decoder_Did_Decode_Sublist) {
 
     decoder.did_decode_table_value  = nil
     decoder.did_decode_array_value  = did_decode_array_value
@@ -68,16 +77,24 @@ set_array_decode :: #force_inline proc(decoder: ^Decoder,
 
 
 
-init_encoder  : Proc_Init_Encoder
+init_encoder  : common.Proc_Json_Init_Encoder
 
 // Decodes a JSON file with the given `decoder`. An instance of Decoder must implement `decode_error()`. 
 // The remaining procedures are optional although you’ll probably want to implement at least `did_decode_table_value()` and `did_decode_array_value()`. 
 // 
 // `val` contains the value retured from the top-level `did_decode_sublist()` callback.
-decode        : Proc_Decode
+decode        : common.Proc_Json_Decode
 
 // Decodes a JSON string with the given `decoder`. An instance of Decoder must implement `decode_error()`. 
 // The remaining procedures are optional although you’ll probably want to implement at least `did_decode_table_value()` and `did_decode_array_value()`. 
 // 
 // `val` contains the value retured from the top-level `did_decode_sublist()` callback.
-decode_string : Proc_Decode_String
+decode_string : common.Proc_Json_Decode_String
+
+
+
+_load_procs :: proc(api: ^playdate.Api) {
+    init_encoder  = api.json.init_encoder
+    decode        = api.json.decode
+    decode_string = api.json.decode_string
+}
