@@ -1,9 +1,27 @@
 package playdate_file
 
 import "core:c"
+import "../common"
+import ".."
+
+File                :: common.File_File
+EOF                 :: common.File_EOF
+Result              :: common.File_Result
+Open_Modes          :: common.File_Open_Modes
+Open_Mode           :: common.File_Open_Mode
+Stat                :: common.File_Stat
+
+// * `set`: Seek from beginning of file
+// * `cur`: Seek from current position
+// * `end`: Set file pointer to EOF plus "offset"    
+Seek_Mode           :: common.File_Seek_Mode
+List_Files_Callback :: common.File_List_Files_Callback
+
+// =================================================================
+
 
 // Returns human-readable text describing the most recent error (usually indicated by a `res == .error` return from a filesystem function).
-get_error  : Proc_Get_Error
+get_error  : common.Proc_File_Get_Error
 
 // Calls the given callback function for every file at path. 
 //
@@ -14,22 +32,22 @@ get_error  : Proc_Get_Error
 // If `show_hidden` is true, files beginning with a period will be included; otherwise, they are skipped. 
 // 
 // Returns false if no folder exists at `path` or it can't be opened.
-list_files : Proc_List_Files
+list_files : common.Proc_File_List_Files
 
 // Populates the struct `file_stat` with information about the file at path.
-stat       : Proc_Stat
+stat       : common.Proc_File_Stat
 
 // Creates the given path in the Data/<gameid> folder. It does not create intermediate folders. 
-mkdir      : Proc_Mkdir
+mkdir      : common.Proc_File_Mkdir
 
 // Deletes the file at `path`. 
 //
 // If `recursive` is true and the target path is a folder, this deletes everything inside the folder 
 // (including folders, folders inside those, and so on) as well as the folder itself.
-unlink     : Proc_Unlink
+unlink     : common.Proc_File_Unlink
 
 // Renames the file at `from` to `to`. It will overwrite the file at to without confirmation. It does not create intermediate folders. 
-rename     : Proc_Rename
+rename     : common.Proc_File_Rename
 
 // Opens a handle for the file at path. 
 //
@@ -39,34 +57,68 @@ rename     : Proc_Rename
 // `.write` and `.append` always write to the data folder. `file` will return nil if a file at path cannot be opened, and `file.get_err()` will describe the error. 
 //
 // The filesystem has a limit of 64 simultaneous open files.
-open       : Proc_Open
+open       : common.Proc_File_Open
 
 // Closes the given file handle. 
-close      : Proc_Close
+close      : common.Proc_File_Close
 
 // Reads bytes from the file into the specified buffer, up to the length of the buffer. 
 //
 // Returns the number of bytes read (0 indicating end of file), or -1 in case of error.
-read       : Proc_Read
+read       : common.Proc_File_Read
 
 
 // Writes the buffer of bytes buf to the file. 
 //
 // Returns the number of bytes written, or -1 in case of error.
-write      : Proc_Write
+write      : common.Proc_File_Write
 
 // Flushes the output buffer of file immediately. 
 //
 // Returns the number of bytes written, or -1 in case of error.
-flush      : Proc_Flush
+flush      : common.Proc_File_Flush
 
 // Returns the current read/write offset in the given file handle, or -1 on error.
-tell       : Proc_Tell
+tell       : common.Proc_File_Tell
 
 // Sets the read/write offset in the given file handle to `position`, relative to the `whence` seek mode. 
 //
 // * `.set` is relative to the beginning of the file.
 // * `.cur` is relative to the current position of the file pointer.
 // * `.end` is relative to the end of the file.  
-seek       : Proc_Seek
+seek       : common.Proc_File_Seek
+
+
+
+// =================================================================
+
+
+//   /////////////////
+//  // LOADER PROC //
+// /////////////////
+
+// Position in PlaydateAPI struct (see pd_api.h)
+API_INDEX :: 1
+
+@(init)
+_register :: proc() {
+    playdate._loaders[API_INDEX] = _load_procs
+}
+
+_load_procs :: proc "contextless" (api: ^playdate.Api) {
+    get_error  = api.file.get_error
+    list_files = api.file.list_files
+    stat       = api.file.stat
+    mkdir      = api.file.mkdir
+    unlink     = api.file.unlink
+    rename     = api.file.rename
+    open       = api.file.open
+    close      = api.file.close
+    read       = api.file.read
+
+    write      = api.file.write
+    flush      = api.file.flush
+    tell       = api.file.tell
+    seek       = api.file.seek
+}
 

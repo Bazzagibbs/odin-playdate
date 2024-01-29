@@ -1,7 +1,7 @@
 package playdate_system
 
 import "core:c"
-import gfx "../graphics"
+import "../common"
 
 Proc_Realloc                        :: #type proc "c" (ptr: rawptr, size: u32) -> [^]byte
 Proc_Format_String                  :: #type proc "c" (ret: ^cstring, fmt: cstring, args: ..any) -> i32
@@ -25,7 +25,7 @@ Proc_Set_Crank_Sounds_Disabled  :: #type proc "c" (flag: i32) -> i32
 Proc_Get_Flipped            :: #type proc "c" () -> i32
 Proc_Set_Auto_Lock_Disabled :: #type proc "c" (disable: i32)
 
-Proc_Set_Menu_Image             :: #type proc "c" (bitmap: gfx.Bitmap, x_offset: i32)
+Proc_Set_Menu_Image             :: #type proc "c" (bitmap: common.Bitmap, x_offset: i32)
 Proc_Add_Menu_Item              :: #type proc "c" (title: cstring, callback: Proc_Menu_Item_Callback_Internal, userdata: rawptr) -> Menu_Item
 Proc_Add_Checkmark_Menu_Item    :: #type proc "c" (title: cstring, value: i32, callback: Proc_Menu_Item_Callback_Internal, userdata: rawptr) -> Menu_Item
 Proc_Add_Options_Menu_Item      :: #type proc "c" (title: cstring, option_titles: [^]cstring, options_count: i32, callback: Proc_Menu_Item_Callback_Internal, userdata: rawptr) -> Menu_Item

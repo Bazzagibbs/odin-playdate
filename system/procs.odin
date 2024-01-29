@@ -2,7 +2,6 @@ package playdate_system
 
 import "core:runtime"
 import "core:strings"
-import gfx "../graphics"
 import "../common"
 
 
@@ -156,7 +155,7 @@ set_auto_lock_disabled :: #force_inline proc "contextless" (disabled: bool) {
 // animate to a position offset left by xoffset pixels as the menu is animated in.
 // 
 // This function could be called in response to the `.pause` event in your implementation of `eventHandler()`.
-set_menu_image :: #force_inline proc "contextless" (bitmap: gfx.Bitmap, x_offset: i32 = 0) {
+set_menu_image :: #force_inline proc "contextless" (bitmap: common.Bitmap, x_offset: i32 = 0) {
     vtable.set_menu_image(bitmap, x_offset)
 }
 

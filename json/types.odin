@@ -1,5 +1,7 @@
 package playdate_json
 
+import "core:c"
+
 Value_Type :: enum u8 {
     Null,
     True,
@@ -14,7 +16,7 @@ Value_Type :: enum u8 {
 Value :: struct {
     type: Value_Type,
     data: struct #raw_union {
-        int_val     : i32,
+        int_val     : c.int,
         float_val   : f32,
         string_val  : cstring,
         array_val   : rawptr, 
@@ -45,10 +47,10 @@ Reader :: struct {
 Encoder :: struct {
     write_proc          : Write_Proc,
     user_data           : rawptr,
-    pretty              : i32,
-    started_table       : i32,
-    started_array       : i32,
-    depth               : i32,
+    pretty              : c.int,
+    started_table       : c.int,
+    started_array       : c.int,
+    depth               : c.int,
 
     start_array         : Proc_Encoder_Start_Array,
     add_array_member    : Proc_Encoder_Add_Array_member,
@@ -88,9 +90,9 @@ Decoder :: struct {
     did_decode_sublist                  : Proc_Decoder_Did_Decode_Sublist,
 
     user_data       : rawptr,
-    return_string   : i32,
+    return_string   : c.int,
     path            : cstring,
 }
 
 
-Write_Proc ::  proc "c" (user_data: rawptr, str: cstring, length: i32)
+Write_Proc ::  proc "c" (user_data: rawptr, str: cstring, length: c.int)

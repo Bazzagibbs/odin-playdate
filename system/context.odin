@@ -6,6 +6,7 @@ import "core:fmt"
 import "core:log"
 import "core:mem"
 
+
 @(private)
 _Level_Headers := [?]string{
     0 = "[DEBUG] ",
@@ -24,7 +25,7 @@ playdate_context :: proc "contextless" () -> runtime.Context {
     c.temp_allocator = playdate_temp_allocator()
 
     when !ODIN_DISABLE_ASSERT {
-        c.assertion_failure_proc = _playdate_assertion_failure_proc
+        c.assertion_failure_proc = playdate_assertion_failure_proc
     }
    
     c.logger = playdate_logger() 
@@ -34,24 +35,19 @@ playdate_context :: proc "contextless" () -> runtime.Context {
 
 
 // Allocator that uses the Playdate's system allocation functions
-playdate_allocator :: #force_inline proc "contextless" () -> runtime.Allocator {
+playdate_allocator :: proc "contextless" () -> runtime.Allocator {
     return runtime.Allocator {
-        procedure = _playdate_allocator_proc,
+        procedure = playdate_allocator_proc,
         data = nil,
     }
 }
 
-playdate_temp_allocator :: #force_inline proc "contextless" () -> runtime.Allocator {
-    return runtime.Allocator {
-        procedure = runtime.default_temp_allocator_proc,
-        data = &runtime.global_default_temp_allocator_data,
-    }
-}
+
 
 // Logger that outputs to the Playdate's console
-playdate_logger :: #force_inline proc "contextless" () -> runtime.Logger {
+playdate_logger :: proc "contextless" () -> runtime.Logger {
     return runtime.Logger {
-        procedure = _playdate_logger_proc,
+        procedure = playdate_logger_proc,
         data = nil,
         lowest_level = .Debug,
         options = {.Level, .Time, .Procedure, .Line},
@@ -59,7 +55,7 @@ playdate_logger :: #force_inline proc "contextless" () -> runtime.Logger {
 }
 
 
-_playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocator_Mode, 
+playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocator_Mode, 
                         size, alignment: int, 
                         old_memory: rawptr, old_size: int, loc := #caller_location) -> (data: []byte, err: runtime.Allocator_Error) {
     ok: bool = true
@@ -93,7 +89,7 @@ _playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocato
 }
 
 
-_playdate_logger_proc :: proc(logger_data: rawptr, level: runtime.Logger_Level, text: string, options: runtime.Logger_Options, location := #caller_location) {
+playdate_logger_proc :: proc(logger_data: rawptr, level: runtime.Logger_Level, text: string, options: runtime.Logger_Options, location := #caller_location) {
     
     sb_backing: [1024]byte
     buf := strings.builder_from_bytes(sb_backing[:len(sb_backing) - 1]) // backing is safe for string -> cstring alias
@@ -128,7 +124,7 @@ _playdate_logger_proc :: proc(logger_data: rawptr, level: runtime.Logger_Level, 
 }
 
 
-_playdate_assertion_failure_proc :: proc (prefix, message: string, loc: runtime.Source_Code_Location) -> ! {
+playdate_assertion_failure_proc :: proc (prefix, message: string, loc: runtime.Source_Code_Location) -> ! {
     buffer: [1024]byte
     sb := strings.builder_from_bytes(buffer[:])
 
@@ -144,3 +140,4 @@ _playdate_assertion_failure_proc :: proc (prefix, message: string, loc: runtime.
     log_to_console("%s", out_cstring)
     runtime.trap()
 }
+
