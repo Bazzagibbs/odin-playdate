@@ -4,7 +4,6 @@ import "../common"
 import ".."
 
 Scale_Flag  :: common.Display_Scale_Flag
-
 Mosaic_Flag :: common.Display_Mosaic_Flag
 
 // =================================================================

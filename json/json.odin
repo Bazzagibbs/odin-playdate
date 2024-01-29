@@ -91,9 +91,22 @@ decode        : common.Proc_Json_Decode
 // `val` contains the value retured from the top-level `did_decode_sublist()` callback.
 decode_string : common.Proc_Json_Decode_String
 
+// =================================================================
 
 
-_load_procs :: proc(api: ^playdate.Api) {
+//   /////////////////
+//  // LOADER PROC //
+// /////////////////
+
+// Position in PlaydateAPI struct (see pd_api.h)
+API_INDEX :: 7
+
+@(init)
+_register :: proc() {
+    playdate._loaders[API_INDEX] = _load_procs
+}
+
+_load_procs :: proc "contextless" (api: ^playdate.Api) {
     init_encoder  = api.json.init_encoder
     decode        = api.json.decode
     decode_string = api.json.decode_string
