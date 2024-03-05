@@ -2,6 +2,18 @@ package playdate_common
 
 import "core:runtime"
 
+Api :: struct { 
+    system      : ^Api_System_Procs,
+    file        : ^Api_File_Procs,
+    graphics    : ^Api_Graphics_Procs,
+    sprite      : ^Api_Sprite_Procs,
+    display     : ^Api_Display_Procs,
+    sound       : ^Api_Sound_Procs,
+    lua         : ^Api_Lua_Procs,
+    json        : ^Api_Json_Procs,
+    scoreboards : ^Api_Scoreboards_Procs,
+}
+
 
 LCD_COLUMNS     :: 400
 LCD_ROWS        :: 240
@@ -40,3 +52,5 @@ Bitmap :: distinct Handle
 Sprite :: distinct Handle
 
 global_context: runtime.Context
+
+

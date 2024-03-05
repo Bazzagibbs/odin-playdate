@@ -22,7 +22,7 @@ playdate_context :: proc "contextless" () -> runtime.Context {
     c: runtime.Context
 
     c.allocator = playdate_allocator()
-    c.temp_allocator = playdate_temp_allocator()
+    // c.temp_allocator = playdate_temp_allocator()
 
     when !ODIN_DISABLE_ASSERT {
         c.assertion_failure_proc = playdate_assertion_failure_proc
@@ -62,18 +62,30 @@ playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocator
     size := u32(size)
     switch mode {
         case .Alloc, .Alloc_Non_Zeroed:
-            data, ok = alloc(u32(size))
-            err = .None if ok else .Out_Of_Memory
+            ptr := realloc(nil, u32(size))
+            if ptr == nil {
+                err = .Out_Of_Memory
+                data = nil
+            } else {
+                err = .None
+                data = ptr[:size]
+            }
         
         case .Free:
-            free(old_memory)
+            _ = realloc(old_memory, 0)
 
         case .Free_All:
             return nil, .Mode_Not_Implemented
 
         case .Resize:
-            data, ok = realloc(old_memory, size)
-            err = .None if ok else .Out_Of_Memory
+            ptr := realloc(old_memory, u32(size))
+            if ptr == nil {
+                err = .Out_Of_Memory
+                data = nil
+            } else {
+                err = .None
+                data = ptr[:size]
+            }
 
         case .Query_Features: 
             set := (^runtime.Allocator_Mode_Set)(old_memory)
@@ -101,8 +113,9 @@ playdate_logger_proc :: proc(logger_data: rawptr, level: runtime.Logger_Level, t
 
     if log.Full_Timestamp_Opts & options != nil {
         fmt.sbprint(&buf, "[")
-        sec, _ := get_seconds_since_epoch()
-        date_time := convert_epoch_to_date_time(sec)
+        sec := get_seconds_since_epoch(nil)
+        date_time: Date_Time
+        convert_epoch_to_date_time(sec, &date_time)
         if .Date in options { fmt.sbprintf(&buf, "%d-%02d-%02d ", date_time.year, date_time.month, date_time.day)}
         if .Time in options { fmt.sbprintf(&buf, "%02d:%02d:%02d", date_time.hour, date_time.minute, date_time.second)}
         fmt.sbprintf(&buf, "] ")
