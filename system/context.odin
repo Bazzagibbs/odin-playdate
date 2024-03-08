@@ -77,6 +77,8 @@ playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocator
         case .Free_All:
             return nil, .Mode_Not_Implemented
 
+        case .Resize_Non_Zeroed:
+            fallthrough
         case .Resize:
             ptr := realloc(old_memory, u32(size))
             if ptr == nil {
