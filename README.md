@@ -1,5 +1,7 @@
 # Odin-Playdate
 
+##  ⚠️⚠️ WORK IN PROGRESS ⚠️⚠️ Not ready for production
+
 Up to date with Playdate SDK version 2.0.3
 
 Odin-lang API bindings for the [Playdate SDK](https://play.date/dev/), used to develop games for the Playdate handheld game system.
