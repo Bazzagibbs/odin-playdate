@@ -15,7 +15,7 @@ VTable :: struct {
     lfo:            ^LFO_VTable,
     envelope:       ^Envelope_VTable,
     source:         ^Source_VTable,
-    control_signal: ^Control_Signal,
+    control_signal: ^Control_Signal_VTable,
     track:          ^Track_VTable,
     instrument:     ^Instrument_VTable,
 
