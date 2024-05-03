@@ -157,10 +157,10 @@ get_menu_item_title           : common.Proc_Sys_Get_Menu_Item_Title
 set_menu_item_title           : common.Proc_Sys_Set_Menu_Item_Title
 
 // Gets the user data associated with this menu item.
-get_menu_item_user_data       : common.Proc_Sys_Get_Menu_Item_Userdata
+get_menu_item_userdata        : common.Proc_Sys_Get_Menu_Item_Userdata
 
 // Sets the user data associated with this menu item.
-set_menu_item_user_data       : common.Proc_Sys_Set_Menu_Item_Userdata
+set_menu_item_userdata        : common.Proc_Sys_Set_Menu_Item_Userdata
 
 // Returns true if the global "reduce flashing" system setting is set, otherwise false.
 get_reduce_flashing           : common.Proc_Sys_Get_Reduce_Flashing
@@ -228,5 +228,58 @@ clear_i_cache                 : common.Proc_Sys_Clear_I_Cache
 
 // System is always loaded by Playdate package. 
 _load_procs :: proc "contextless" (api: ^common.Api) {
+    
+    realloc                        = api.system.realloc
+    format_string                  = api.system.format_string
+    log_to_console                 = api.system.log_to_console
+    error                          = api.system.error
+    get_language                   = api.system.get_language
+    get_current_time_milliseconds  = api.system.get_current_time_milliseconds
+    get_seconds_since_epoch        = api.system.get_seconds_since_epoch
+    draw_fps                       = api.system.draw_fps
 
+    set_update_callback            = api.system.set_update_callback
+    get_button_state               = api.system.get_button_state
+    set_peripherals_enabled        = api.system.set_peripherals_enabled
+    get_accelerometer              = api.system.get_accelerometer
+
+    get_crank_change               = api.system.get_crank_change
+    get_crank_angle                = api.system.get_crank_angle
+    is_crank_docked                = api.system.is_crank_docked
+    set_crank_sounds_disabled      = api.system.set_crank_sounds_disabled
+
+    get_flipped                    = api.system.get_flipped
+    set_auto_lock_disabled         = api.system.set_auto_lock_disabled
+
+    set_menu_image                 = api.system.set_menu_image
+    add_menu_item                  = api.system.add_menu_item
+    add_checkmark_menu_item        = api.system.add_checkmark_menu_item
+    add_options_menu_item          = api.system.add_options_menu_item
+    remove_all_menu_items          = api.system.remove_all_menu_items
+    remove_menu_item               = api.system.remove_menu_item
+    get_menu_item_value            = api.system.get_menu_item_value
+    set_menu_item_value            = api.system.set_menu_item_value
+    get_menu_item_title            = api.system.get_menu_item_title
+    set_menu_item_title            = api.system.set_menu_item_title
+    get_menu_item_userdata         = api.system.get_menu_item_userdata
+    set_menu_item_userdata         = api.system.set_menu_item_userdata
+
+    get_reduce_flashing            = api.system.get_reduce_flashing
+
+    // 1.1
+    get_elapsed_time               = api.system.get_elapsed_time
+    reset_elapsed_time             = api.system.reset_elapsed_time
+
+    // 1.4
+    get_battery_percentage         = api.system.get_battery_percentage
+    get_battery_voltage            = api.system.get_battery_voltage
+
+    // 1.13
+    get_timezone_offset            = api.system.get_timezone_offset
+    should_display_24_hour_time    = api.system.should_display_24_hour_time
+    convert_epoch_to_date_time     = api.system.convert_epoch_to_date_time
+    convert_date_time_to_epoch     = api.system.convert_date_time_to_epoch
+
+    // 2.0
+    clear_i_cache                  = api.system.clear_i_cache
 }
