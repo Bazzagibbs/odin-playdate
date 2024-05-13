@@ -6,9 +6,6 @@ import "core:log"
 import "common"
 import "system"
 
-default_context :: system.playdate_context
-default_logger  :: system.playdate_logger
-
 Api :: common.Api
 
 
@@ -26,11 +23,13 @@ load_procs :: proc "contextless" (api: ^Api) {
 }
 
 
-@(deferred_out=destroy_global_context)
-create_global_context :: proc "contextless" () -> runtime.Context {
-    return default_context()
-}
+// @(deferred_out=destroy_global_context)
+// create_global_context :: proc "contextless" () -> runtime.Context {
+//     return playdate_context()
+// }
+//
+// destroy_global_context :: proc "contextless" (ctx: runtime.Context) {
+//
+// }
 
-destroy_global_context :: proc "contextless" (ctx: runtime.Context) {
-
-}
+default_context :: system.playdate_context

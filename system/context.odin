@@ -1,11 +1,14 @@
 package playdate_system
 
+// Can't be in common as it uses procs from System
+
 import "core:runtime"
 import "core:strings"
 import "core:fmt"
 import "core:log"
 import "core:mem"
 
+NO_DEFAULT_TEMP_ALLOCATOR :: runtime.NO_DEFAULT_TEMP_ALLOCATOR
 
 @(private)
 _Level_Headers := [?]string{
@@ -16,13 +19,16 @@ _Level_Headers := [?]string{
     4 = "[FATAL] ",
 }
 
-
 // Get a context configured for Playdate applications.
 playdate_context :: proc "contextless" () -> runtime.Context {
+    #assert(NO_DEFAULT_TEMP_ALLOCATOR, `Default temp allocator is not supported for Playdate applications. Build with the "-default-to-nil-allocator" flag.`)
+
     c: runtime.Context
+    context = c
 
     c.allocator = playdate_allocator()
-    // c.temp_allocator = playdate_temp_allocator()
+    // c.temp_allocator.data = 
+
 
     when !ODIN_DISABLE_ASSERT {
         c.assertion_failure_proc = playdate_assertion_failure_proc
@@ -115,8 +121,8 @@ playdate_logger_proc :: proc(logger_data: rawptr, level: runtime.Logger_Level, t
 
     if log.Full_Timestamp_Opts & options != nil {
         fmt.sbprint(&buf, "[")
-        sec := get_seconds_since_epoch(nil)
-        date_time: Date_Time
+        sec       := get_seconds_since_epoch(nil)
+        date_time :  Date_Time
         convert_epoch_to_date_time(sec, &date_time)
         if .Date in options { fmt.sbprintf(&buf, "%d-%02d-%02d ", date_time.year, date_time.month, date_time.day)}
         if .Time in options { fmt.sbprintf(&buf, "%02d:%02d:%02d", date_time.hour, date_time.minute, date_time.second)}
