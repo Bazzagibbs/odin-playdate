@@ -7,6 +7,7 @@ import "core:strings"
 import "core:fmt"
 import "core:log"
 import "core:mem"
+import "../bindings"
 
 NO_DEFAULT_TEMP_ALLOCATOR :: runtime.NO_DEFAULT_TEMP_ALLOCATOR
 
@@ -68,7 +69,7 @@ playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocator
     size := u32(size)
     switch mode {
         case .Alloc, .Alloc_Non_Zeroed:
-            ptr := realloc(nil, u32(size))
+            ptr := bindings.system.realloc(nil, u32(size))
             if ptr == nil {
                 err = .Out_Of_Memory
                 data = nil
@@ -78,7 +79,7 @@ playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocator
             }
         
         case .Free:
-            _ = realloc(old_memory, 0)
+            _ = bindings.system.realloc(old_memory, 0)
 
         case .Free_All:
             return nil, .Mode_Not_Implemented
@@ -86,7 +87,7 @@ playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocator
         case .Resize_Non_Zeroed:
             fallthrough
         case .Resize:
-            ptr := realloc(old_memory, u32(size))
+            ptr := bindings.system.realloc(old_memory, u32(size))
             if ptr == nil {
                 err = .Out_Of_Memory
                 data = nil
@@ -121,9 +122,9 @@ playdate_logger_proc :: proc(logger_data: rawptr, level: runtime.Logger_Level, t
 
     if log.Full_Timestamp_Opts & options != nil {
         fmt.sbprint(&buf, "[")
-        sec       := get_seconds_since_epoch(nil)
-        date_time :  Date_Time
-        convert_epoch_to_date_time(sec, &date_time)
+        sec       := bindings.system.get_seconds_since_epoch(nil)
+        date_time :  bindings.Sys_Date_Time
+        bindings.system.convert_epoch_to_date_time(sec, &date_time)
         if .Date in options { fmt.sbprintf(&buf, "%d-%02d-%02d ", date_time.year, date_time.month, date_time.day)}
         if .Time in options { fmt.sbprintf(&buf, "%02d:%02d:%02d", date_time.hour, date_time.minute, date_time.second)}
         fmt.sbprintf(&buf, "] ")
@@ -137,10 +138,10 @@ playdate_logger_proc :: proc(logger_data: rawptr, level: runtime.Logger_Level, t
 
     switch level {
         case .Debug, .Info, .Warning: 
-            log_to_console(output_cstr)
+            bindings.system.log_to_console(output_cstr)
             // log_to_console("%s", output_cstr)
         case .Error, .Fatal:
-            error("%s", output_cstr)
+            bindings.system.error("%s", output_cstr)
     }
 }
 
@@ -158,7 +159,7 @@ playdate_assertion_failure_proc :: proc (prefix, message: string, loc: runtime.S
     fmt.sbprint(&sb, "\n")
 
     out_cstring := strings.clone_to_cstring(strings.to_string(sb))
-    log_to_console("%s", out_cstring)
+    bindings.system.log_to_console("%s", out_cstring)
     runtime.trap()
 }
 

@@ -1,8 +1,8 @@
 package playdate
 
-import "common"
+import "bindings"
 
-Handle :: common.Handle
+Handle :: bindings.Handle
 
 System_Event :: enum {
     init,
