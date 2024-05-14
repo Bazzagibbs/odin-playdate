@@ -1,4 +1,4 @@
-package playdate_common
+package playdate_bindings
 
 //   ///////////
 //  // TYPES //
