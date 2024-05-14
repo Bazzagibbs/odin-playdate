@@ -1,9 +1,5 @@
 package playdate_bindings
 
-//   ///////////
-//  // TYPES //
-// ///////////
-
 Scoreboards_Score :: struct {
     rank    : u32,
     value   : u32,

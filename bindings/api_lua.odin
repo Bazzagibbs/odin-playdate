@@ -1,9 +1,5 @@
 package playdate_bindings
 
-//   ///////////
-//  // TYPES //
-// ///////////
-
 Lua_State :: distinct Handle
 
 Lua_C_Function :: #type proc "c" (state: Lua_State) -> i32

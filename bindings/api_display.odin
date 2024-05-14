@@ -2,10 +2,6 @@ package playdate_bindings
 
 import "core:c"
 
-//   ///////////
-//  // TYPES //
-// ///////////
-
 Display_Scale_Flag :: enum u32 {
     _1 = 1,
     _2 = 2,

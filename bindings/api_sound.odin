@@ -515,9 +515,9 @@ Api_Sound_Channel_Procs :: struct {
 
 
 Sound_Mic_Source :: enum {
-    Autodetect = 0,
-    Internal   = 1,
-    Headset    = 2,
+    autodetect = 0,
+    internal   = 1,
+    headset    = 2,
 }
 
 
