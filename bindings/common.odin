@@ -1,4 +1,4 @@
-package playdate_common
+package playdate_bindings
 
 import "core:runtime"
 
@@ -50,7 +50,3 @@ Handle :: distinct rawptr
 
 Bitmap :: distinct Handle
 Sprite :: distinct Handle
-
-global_context: runtime.Context
-
-

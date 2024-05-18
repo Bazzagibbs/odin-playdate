@@ -1,5 +1,7 @@
 # Odin-Playdate
 
+##  ⚠️⚠️ WORK IN PROGRESS ⚠️⚠️ Not ready for production
+
 Up to date with Playdate SDK version 2.0.3
 
 Odin-lang API bindings for the [Playdate SDK](https://play.date/dev/), used to develop games for the Playdate handheld game system.
@@ -76,17 +78,17 @@ Please feel free to contribute! Here is the current implementation status of eac
 - ➖ Partially implemented (see Notes)
 - ❌ Not implemented
 
-| Package       | C bindings | Tests | Notes |
-|---------------|:----------:|:-----:|-------|
-| `display`     |  ➕        | ❌   |       |
-| `file`        |  ➕        | ❌   |       |
-| `graphics`    |  ➕        | ❌   |       |
-| `json`        |  ➕        | ❌   | Need someone to see if it's functional |
-| `lua`         |  ➕        | ❌   | `register_class` is unsafe, See issue #12|
-| `scoreboards` |  ➕        | ❌   | Can't test/no documentation - only approved games can use Scoreboards API |
-| `sound`       |  ❌        | ❌   | This is a HUGE package. C binding parameters are unnamed. |
-| `sprite`      |  ➕        | ❌   | Sprite update and draw callbacks are contextless. |
-| `system`      |  ➕        | ❌   | Documentation comments may be slightly inaccurate, needs double checking |
+| Package       | C bindings | Odin-style wrapper | Tests   | Notes |
+|---------------|:----------:|:------------------:|:-------:|:-----:|-------|
+| `display`     | ➕         | ➕                 | ❌      |       |
+| `file`        | ➕         | ❌                 | ❌      |       |
+| `graphics`    | ➕         | ❌                 | ❌      |       |
+| `json`        | ➕         | ❌                 | ❌      | Need someone to see if it's functional |
+| `lua`         | ➕         | ❌                 | ❌      | `register_class` is unsafe, See issue #12|
+| `scoreboards` | ➕         | ❌                 | ❌      | Can't test/no documentation - only approved games can use Scoreboards API |
+| `sound`       | ➕         | ❌                 | ❌      |       |
+| `sprite`      | ➕         | ❌                 | ❌      | Sprite update and draw callbacks are contextless. |
+| `system`      | ➕         | ❌                 | ❌      | Documentation comments may be slightly inaccurate, needs double checking |
 
 
 ## Other notes
