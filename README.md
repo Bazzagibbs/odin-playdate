@@ -81,7 +81,7 @@ Please feel free to contribute! Here is the current implementation status of eac
 | Package       | C bindings | Odin-style wrapper | Tests   | Notes |
 |---------------|:----------:|:------------------:|:-------:|:-----:|-------|
 | `display`     | ➕         | ➕                 | ❌      |       |
-| `file`        | ➕         | ❌                 | ❌      |       |
+| `file`        | ➕         | ➕                 | ❌      |       |
 | `graphics`    | ➕         | ❌                 | ❌      |       |
 | `json`        | ➕         | ❌                 | ❌      | Need someone to see if it's functional |
 | `lua`         | ➕         | ❌                 | ❌      | `register_class` is unsafe, See issue #12|
