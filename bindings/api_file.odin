@@ -52,13 +52,13 @@ Api_File_Procs :: struct {
     unlink     : proc "c" (name: cstring, recursive: b32) -> (res: File_Result),
     rename     : proc "c" (from, to: cstring) -> (res: File_Result),
 
-    open       : proc "c" (name: cstring, mode: File_Open_Modes) -> (file: ^File_File),
-    close      : proc "c" (file: ^File_File) -> (res: File_Result),
-    read       : proc "c" (file: ^File_File, buffer: []byte) -> (bytes_read: c.int),
-    write      : proc "c" (file: ^File_File, buffer: []byte) -> (bytes_written: c.int),
-    flush      : proc "c" (file: ^File_File) -> (bytes_written: c.int),
-    tell       : proc "c" (file: ^File_File) -> (current_offset: c.int),
-    seek       : proc "c" (file: ^File_File, position: c.int, whence: File_Seek_Mode) -> (res: File_Result),
+    open       : proc "c" (name: cstring, mode: File_Open_Modes) -> (file: File_File),
+    close      : proc "c" (file: File_File) -> (res: File_Result),
+    read       : proc "c" (file: File_File, buffer: [^]byte, length: u32) -> (bytes_read: c.int),
+    write      : proc "c" (file: File_File, buffer: [^]byte, length: u32) -> (bytes_written: c.int),
+    flush      : proc "c" (file: File_File) -> (bytes_written: c.int),
+    tell       : proc "c" (file: File_File) -> (current_offset: c.int),
+    seek       : proc "c" (file: File_File, position: c.int, whence: File_Seek_Mode) -> (res: File_Result),
 }
 
 // =================================================================
