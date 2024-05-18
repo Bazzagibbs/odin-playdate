@@ -106,7 +106,7 @@ Api_Graphics_Procs :: struct {
     draw_ellipse               : proc "c" (x, y, width, height, line_width: c.int, start_angle, end_angle: f32, color: Gfx_Color),
     fill_ellipse               : proc "c" (x, y, width, height: c.int, start_angle, end_angle: f32, color: Gfx_Color),
     draw_scaled_bitmap         : proc "c" (bitmap: Bitmap, x, y: c.int, x_scale, y_scale: f32),
-    draw_text                  : proc "c" (text: cstring, len: u32, encoding: Gfx_String_Encoding, x, y: c.int) -> i32,
+    draw_text                  : proc "c" (text: cstring, len: c.size_t, encoding: Gfx_String_Encoding, x, y: c.int) -> i32,
     
     // LCDBitmap
     new_bitmap                 : proc "c" (width, height: c.int, bg_color: Gfx_Color) -> Bitmap ,
@@ -130,7 +130,7 @@ Api_Graphics_Procs :: struct {
     get_font_page              : proc "c" (font: Gfx_Font, ch: u32) -> Gfx_Font_Page,
     get_page_glyph             : proc "c" (page: Gfx_Font_Page, ch: u32, bitmap: ^Bitmap, advance: ^(c.int)) -> Gfx_Font_Glyph,
     get_glyph_kerning          : proc "c" (glyph: Gfx_Font_Glyph, glyph_code, next_code: u32) -> c.int ,
-    get_text_width             : proc "c" (font: Gfx_Font, text: cstring, len: u32, encoding: Gfx_String_Encoding, tracking: c.int) -> i32,
+    get_text_width             : proc "c" (font: Gfx_Font, text: cstring, len: c.size_t, encoding: Gfx_String_Encoding, tracking: c.int) -> i32,
 
     // raw framebuffer access
     get_frame                  : proc "c" () -> [^]u8,
@@ -142,7 +142,7 @@ Api_Graphics_Procs :: struct {
 
     // misc util.
     set_color_to_pattern       : proc "c" (color: Gfx_Color, bitmap: Bitmap, x, y: c.int) ,
-    check_mask_collision       : proc "c" (bitmap_1: Bitmap, x_1, y_1: c.int, flip_1: Bitmap_Flip, bitmap_2: Bitmap, x_2, y_2: i32, flip_2: Bitmap_Flip, rect: Rect) -> i32,
+    check_mask_collision       : proc "c" (bitmap_1: Bitmap, x_1, y_1: c.int, flip_1: Bitmap_Flip, bitmap_2: Bitmap, x_2, y_2: i32, flip_2: Bitmap_Flip, rect: Rect) -> b32,
 
     // 1.1
     set_screen_clip_rect       : proc "c" (x, y, width, height: c.int),
@@ -157,7 +157,7 @@ Api_Graphics_Procs :: struct {
     set_text_leading           : proc "c" (line_height_adjustment: c.int) ,
 
     // 1.8
-    set_bitmap_mask            : proc "c" (bitmap, mask: Bitmap) -> c.int,
+    set_bitmap_mask            : proc "c" (bitmap, mask: Bitmap) -> c.int, // Return value undocumented
 
     get_bitmap_mask            : proc "c" (bitmap: Bitmap) -> Bitmap ,
 
@@ -165,7 +165,7 @@ Api_Graphics_Procs :: struct {
     set_stencil_image          : proc "c" (stencil: Bitmap, tile: c.int),
 
     // 1.12
-    make_font_from_data        : proc "c" (data: Gfx_Font_Data, wide: c.int) -> Gfx_Font,
+    make_font_from_data        : proc "c" (data: Gfx_Font_Data, wide: b32) -> Gfx_Font,
 
     // 2.1
     get_text_tracking          : proc "c" () -> c.int,
