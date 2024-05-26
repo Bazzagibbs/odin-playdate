@@ -88,7 +88,7 @@ Api_Sound_Sample_Procs :: struct {
     new_sample_buffer:    proc "c" (byte_count: i32) -> Audio_Sample,
     load_into_sample:     proc "c" (sample: Audio_Sample, path: cstring) -> b32,
     load:                 proc "c" (path: cstring) -> Audio_Sample,
-    new_sample_from_data: proc "c" (data: [^]u8, format: Sound_Format, sample_rate: u32, byte_count: i32) -> Audio_Sample,
+    new_sample_from_data: proc "c" (data: [^]u8, format: Sound_Format, sample_rate: u32, byte_count: i32, should_free_data: b32) -> Audio_Sample,
     get_data:             proc "c" (sample: Audio_Sample, data: ^[^]u8, format: ^Sound_Format, sample_rate: ^u32, byte_count: ^u32),
     free_sample:          proc "c" (sample: Audio_Sample),
     get_length:           proc "c" (sample: Audio_Sample) -> f32,
@@ -342,7 +342,7 @@ Api_Sound_Sequence_Procs :: struct {
     get_time:           #type proc "c" (seq: Sound_Sequence) -> u32,
     set_time:           #type proc "c" (seq: Sound_Sequence, time: u32),
     set_loops:          #type proc "c" (seq: Sound_Sequence, loop_start, loop_end, loops: i32),
-    get_tempo:          #type proc "c" (seq: Sound_Sequence) -> i32,
+    get_tempo_deprecated: #type proc "c" (seq: Sound_Sequence) -> i32,
     set_tempo:          #type proc "c" (seq: Sound_Sequence, steps_per_second: i32),
     get_track_count:    #type proc "c" (seq: Sound_Sequence) -> i32,
     add_track:          #type proc "c" (seq: Sound_Sequence) -> Sound_Sequence_Track,
@@ -357,6 +357,9 @@ Api_Sound_Sequence_Procs :: struct {
     stop:               #type proc "c" (seq: Sound_Sequence),
     get_current_step:   #type proc "c" (seq: Sound_Sequence, time_offset: ^i32) -> i32,
     set_current_step:   #type proc "c" (seq: Sound_Sequence, step, time_offset: i32, play_notes: b32),
+
+    // 2.5
+    get_tempo:          #type proc "c" (seq: Sound_Sequence) -> f32,
 }
 
 
