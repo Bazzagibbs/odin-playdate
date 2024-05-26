@@ -87,7 +87,7 @@ Api_Graphics_Procs :: struct {
     clear                      : proc "c" (color: Gfx_Color),
     set_background_color       : proc "c" (color: Gfx_Solid_Color) ,
     set_stencil                : proc "c" (stencil: Bitmap),
-    set_draw_mode              : proc "c" (draw_mode: Bitmap_Draw_Mode),
+    set_draw_mode              : proc "c" (draw_mode: Bitmap_Draw_Mode) -> Bitmap_Draw_Mode,
     set_draw_offset            : proc "c" (dx, dy: c.int),
     set_clip_rect              : proc "c" (x, y, width, height: c.int),
     clear_clip_rect            : proc "c" (),
@@ -169,6 +169,11 @@ Api_Graphics_Procs :: struct {
 
     // 2.1
     get_text_tracking          : proc "c" () -> c.int,
+
+    // 2.5
+    set_pixel                  : proc "c" (x, y: c.int, color: Gfx_Color),
+    get_bitmap_pixel           : proc "c" (bitmap: Bitmap, x, y: c.int) -> Gfx_Solid_Color,
+    get_bitmap_table_info      : proc "c" (table: Gfx_Bitmap_Table, count, width: ^c.int),
 }
 
 // =================================================================

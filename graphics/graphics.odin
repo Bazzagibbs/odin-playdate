@@ -62,8 +62,8 @@ set_stencil :: proc "contextless" (stencil: Bitmap) {
 }
 
 // Sets the mode used for drawing bitmaps. Note that text drawing uses bitmaps, so this affects how fonts are displayed as well. 
-set_draw_mode :: proc "contextless" (mode: Bitmap_Draw_Mode) {
-    bindings.graphics.set_draw_mode(mode)
+set_draw_mode :: proc "contextless" (mode: Bitmap_Draw_Mode) -> Bitmap_Draw_Mode {
+    return bindings.graphics.set_draw_mode(mode)
 }
 
 // Offsets the origin point for all drawing calls to `dx, dy` (can be negative).
@@ -438,4 +438,28 @@ make_font_from_data :: proc "contextless" (data: Font_Data, wide: b32) -> Font {
 // Gets the tracking used when drawing text
 get_text_tracking :: proc "contextless" () -> i32 {
     return bindings.graphics.get_text_tracking()
+}
+
+
+// 2.5
+
+// Sets the pixel at (x,y) in the current drawing context (by default the screen) to the given color. 
+// 
+// Be aware that setting a pixel at a time is not very efficient: In our testing, more than around 20,000 calls 
+// in a tight loop will drop the frame rate below 30 fps.
+set_pixel :: proc "contextless" (x, y: i32, color: Color) {
+    bindings.graphics.set_pixel(x, y, color)
+}
+
+// Gets the color of the pixel at (x,y) in the given bitmap. 
+// If the coordinate is outside the bounds of the bitmap, or if the bitmap has a mask and the pixel is marked transparent, 
+// the function returns .clear; otherwise the return value is .white or .black.
+get_bitmap_pixel :: proc "contextless" (bitmap: Bitmap, x, y: i32) -> Solid_Color {
+    return bindings.graphics.get_bitmap_pixel(bitmap, x, y)
+}
+
+// Returns the bitmap table’s image count (if not nil) and number of cells across (ditto).
+get_bitmap_table_info :: proc "contextless" (table: Bitmap_Table) -> (count, cells_wide: i32) {
+    bindings.graphics.get_bitmap_table_info(table, &count, &cells_wide)
+    return
 }
