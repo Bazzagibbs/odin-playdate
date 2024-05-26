@@ -81,7 +81,7 @@ Api_Video_Procs :: struct {
 // =================================================================
 
 Api_Graphics_Procs :: struct {
-    video                      : Api_Video_Procs,
+    video                      : ^Api_Video_Procs,
 
     // Drawing Functions
     clear                      : proc "c" (color: Gfx_Color),
