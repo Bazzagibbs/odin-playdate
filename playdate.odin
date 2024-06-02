@@ -1,6 +1,6 @@
 package playdate
 
-import "core:runtime"
+import "base:runtime"
 import "core:log"
 
 import "bindings"

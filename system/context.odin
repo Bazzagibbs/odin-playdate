@@ -2,7 +2,7 @@ package playdate_system
 
 // Can't be in common as it uses procs from System
 
-import "core:runtime"
+import "base:runtime"
 import "core:strings"
 import "core:fmt"
 import "core:log"

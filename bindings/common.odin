@@ -1,6 +1,6 @@
 package playdate_bindings
 
-import "core:runtime"
+import "base:runtime"
 
 Api :: struct { 
     system      : ^Api_System_Procs,
