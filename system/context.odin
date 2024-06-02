@@ -22,14 +22,16 @@ _Level_Headers := [?]string{
 
 // Get a context configured for Playdate applications.
 playdate_context :: proc "contextless" () -> runtime.Context {
-    #assert(NO_DEFAULT_TEMP_ALLOCATOR, `Default temp allocator is not supported for Playdate applications. Build with the "-default-to-nil-allocator" flag.`)
-
     c: runtime.Context
     context = c
 
     c.allocator = playdate_allocator()
-    // c.temp_allocator.data = 
+    
+    c.temp_allocator.procedure = runtime.default_temp_allocator_proc
 
+    when !runtime.NO_DEFAULT_TEMP_ALLOCATOR {
+        c.temp_allocator.data = &runtime.global_default_temp_allocator_data
+    }
 
     when !ODIN_DISABLE_ASSERT {
         c.assertion_failure_proc = playdate_assertion_failure_proc

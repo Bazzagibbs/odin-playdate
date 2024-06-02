@@ -36,6 +36,7 @@ import "core:c/libc"
 import "core:fmt"
 import "core:os"
 import "core:strings"
+import "base:runtime"
 
 PROGRAM_NAME     :: #config(name, ODIN_BUILD_PROJECT_NAME)
 
@@ -55,8 +56,9 @@ DEVICE_SUBDIR    :: #config(device_subdir, "simulator")
 // Build flags
 BUILD_FLAGS_COMMON :: []string {
     "-build-mode:shared", 
-    "-default-to-nil-allocator", // Playdate only has 16MB of memory, the default temporary allocator has 4MB backing :(
+    "-define:DEFAULT_TEMP_ALLOCATOR_BACKING_SIZE=1048576" // 1MB, default is 4MB. Playdate only has 16MB of memory
 }
+
 
 BUILD_FLAGS_DEVICE :: []string {
     "-target:freestanding_arm32", // this doesn't exist yet
@@ -86,7 +88,6 @@ main :: proc() {
         fmt.print(USAGE)
         return
     }
-
 
     // Find Playdate SDK
     path_sdk = os.get_env("PLAYDATE_SDK_PATH")
