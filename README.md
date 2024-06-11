@@ -79,7 +79,7 @@ Please feel free to contribute! Here is the current implementation status of eac
 - ❌ Not implemented
 
 | Package       | C bindings | Odin-style wrapper | Tests   | Notes |
-|---------------|:----------:|:------------------:|:-------:|:-----:|-------|
+|---------------|:----------:|:------------------:|:-------:|-------|
 | `display`     | ➕         | ➕                 | ❌      |       |
 | `file`        | ➕         | ➕                 | ❌      |       |
 | `graphics`    | ➕         | ➕                 | ❌      |       |
