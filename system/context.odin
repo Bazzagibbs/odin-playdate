@@ -22,24 +22,18 @@ _Level_Headers := [?]string{
 
 // Get a context configured for Playdate applications.
 playdate_context :: proc "contextless" () -> runtime.Context {
-    c: runtime.Context
-    context = c
+    ctx: runtime.Context
 
-    c.allocator = playdate_allocator()
-    
-    c.temp_allocator.procedure = runtime.default_temp_allocator_proc
-
-    when !runtime.NO_DEFAULT_TEMP_ALLOCATOR {
-        c.temp_allocator.data = &runtime.global_default_temp_allocator_data
-    }
+    ctx.allocator      = playdate_allocator()
+    ctx.temp_allocator = playdate_temp_allocator()
 
     when !ODIN_DISABLE_ASSERT {
-        c.assertion_failure_proc = playdate_assertion_failure_proc
+        ctx.assertion_failure_proc = playdate_assertion_failure_proc
     }
    
-    c.logger = playdate_logger() 
+    ctx.logger = playdate_logger() 
     
-    return c
+    return ctx
 }
 
 
@@ -52,14 +46,28 @@ playdate_allocator :: proc "contextless" () -> runtime.Allocator {
 }
 
 
+playdate_temp_allocator :: proc "contextless" () -> runtime.Allocator {
+    when !runtime.NO_DEFAULT_TEMP_ALLOCATOR {
+        return runtime.Allocator {
+            procedure = runtime.default_temp_allocator_proc,
+            data      = &runtime.global_default_temp_allocator_data,
+        }
+    } 
+    else {
+        return {}
+    }
+
+}
+
+
 
 // Logger that outputs to the Playdate's console
 playdate_logger :: proc "contextless" () -> runtime.Logger {
     return runtime.Logger {
-        procedure = playdate_logger_proc,
-        data = nil,
+        procedure    = playdate_logger_proc,
+        data         = nil,
         lowest_level = .Debug,
-        options = {.Level, .Time, .Procedure, .Line},
+        options      = {.Level, .Time, .Procedure, .Line},
     }
 }
 
@@ -69,6 +77,7 @@ playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocator
                         old_memory: rawptr, old_size: int, loc := #caller_location) -> (data: []byte, err: runtime.Allocator_Error) {
     ok: bool = true
     size := u32(size)
+
     switch mode {
         case .Alloc, .Alloc_Non_Zeroed:
             ptr := bindings.system.realloc(nil, u32(size))
@@ -136,14 +145,13 @@ playdate_logger_proc :: proc(logger_data: rawptr, level: runtime.Logger_Level, t
 
     fmt.sbprintf(&buf, "%v", text)
 
-    output_cstr := strings.unsafe_string_to_cstring(strings.to_string(buf))
+    output_cstr := strings.unsafe_string_to_cstring(strings.to_string(buf)) // backing has null byte
 
     switch level {
         case .Debug, .Info, .Warning: 
             bindings.system.log_to_console(output_cstr)
-            // log_to_console("%s", output_cstr)
         case .Error, .Fatal:
-            bindings.system.error("%s", output_cstr)
+            bindings.system.error(output_cstr)
     }
 }
 
