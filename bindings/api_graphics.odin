@@ -44,8 +44,8 @@ Gfx_String_Encoding :: enum {
 Gfx_Pattern :: distinct [16]byte
 
 Gfx_Color :: struct #raw_union {
-    Gfx_Solid_Color,
-    ^Gfx_Pattern,
+    solid:   Gfx_Solid_Color,
+    pattern: ^Gfx_Pattern,
 }
 
 Gfx_Polygon_Fill_Rule :: enum {

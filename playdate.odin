@@ -38,3 +38,5 @@ System_Event :: enum {
     key_released,
     low_power,
 }
+
+Update_Result :: bindings.Update_Result

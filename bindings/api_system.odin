@@ -35,12 +35,12 @@ Sys_Peripheral :: enum u16 {
     accelerometer   = 0,
 }
 
-Sys_Result :: enum i32 {
-    ok    = 0,
-    error = 1,
+Update_Result :: enum i32 {
+    no_display_update = 0,
+    display_update    = 1,
 }
 
-Sys_Callback_Proc                :: #type proc "c" (userdata: rawptr) -> Sys_Result
+Sys_Callback_Proc                :: #type proc "c" (userdata: rawptr) -> Update_Result
 Sys_Menu_Item_Callback_Proc      :: #type proc "c" (userdata: rawptr)
 Sys_Button_Callback_Proc         :: #type proc "c" (button: Sys_Buttons, down: b32, _when: u32, user_data: rawptr) -> i32
 Sys_Serial_Message_Callback_Proc :: #type proc "c" (userdata: rawptr)

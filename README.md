@@ -16,16 +16,16 @@ Note: Odin-style packages are incomplete and subject to breaking changes. If sta
 
 ```odin
 import "playdate"
-import "playdate/graphics" // not needed for C-style
+import "playdate/graphics"
 
-@(export)
-eventHandler :: proc "c" (pd_api: ^playdate.Api, /* ... */) {
+pd: ^playdate.Api
+
+my_load_font :: proc () {
     // C bindings
     err: cstring
-    my_font := pd_api.graphics.load_font("my/font/path", &out_err)
+    my_font := pd.graphics.load_font("my/font/path", &out_err)
 
-    // Odin-style
-    playdate.load_api(pd_api) // call on init
+    // Odin-style wrapper
     my_font, err := graphics.load_font("my/font/path")
 }
 ```
@@ -48,12 +48,45 @@ Playdate applications are libraries that export the following procedure:
 
 ```odin
 @(export)
-eventHandler :: proc "c" (pd_api: ^playdate.Api, event: playdate.System_Event, arg: u32) -> i32
+eventHandler :: proc "c" (pd_api: ^playdate.Api, event: playdate.System_Event, arg: u32) -> i32 {}
 ```
+
+Create a context that uses the Playdate's allocator:
+
+```odin
+import "base:runtime"
+import "playdate"
+import "core:log"
+
+global_ctx : runtime.Context
+
+my_init :: proc "contextless" (pd: ^playdate.Api) {
+    global_ctx = playdate.default_context(pd)
+}
+
+
+update :: proc "c" (user_data: rawptr) -> playdate.Update_Result {
+    context = global_ctx
+
+    my_slice := make([]string, 99) // allocates using pd.system.realloc
+    delete(my_slice)
+
+    log.info("Hellope") // logs to Playdate console
+}
+```
+
+From here, follow the official Playdate C guide for Game Initialization.
 
 ## Compiling for the Playdate
 
 WIP - Expected to change
+
+### Option A: Build scripts
+
+1. Copy the build scripts from `playdate/_scripts` to the root directory of your project. 
+2. Add the directories `out_sim` and `out_device` to your .gitignore file.
+
+### Option B: Manual
 
 1. Create an intermediate directory that the shared library will be compiled into, and an output directory, e.g. "./intermediate/" and "./out/"
 2. Compile your Odin project into your intermediate directory with the `-build-mode:shared` option (and `-debug` if desired)
@@ -68,6 +101,7 @@ $PLAYDATE_SDK_PATH/bin/pdc intermediate/ out/Game_Name.pdx
 ```sh
 $PLAYDATE_SDK_PATH/bin/PlaydateSimulator out/Game_Name.pdx
 ```
+
 
 ## Contributing
 

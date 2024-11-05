@@ -21,10 +21,10 @@ _Level_Headers := [?]string{
 }
 
 // Get a context configured for Playdate applications.
-playdate_context :: proc "contextless" () -> runtime.Context {
+playdate_context :: proc "contextless" (api: ^bindings.Api) -> runtime.Context {
     ctx: runtime.Context
 
-    ctx.allocator      = playdate_allocator()
+    ctx.allocator      = playdate_allocator(api)
     ctx.temp_allocator = playdate_temp_allocator()
 
     when !ODIN_DISABLE_ASSERT {
@@ -38,10 +38,10 @@ playdate_context :: proc "contextless" () -> runtime.Context {
 
 
 // Allocator that uses the Playdate's system allocation functions
-playdate_allocator :: proc "contextless" () -> runtime.Allocator {
+playdate_allocator :: proc "contextless" (api: ^bindings.Api) -> runtime.Allocator {
     return runtime.Allocator {
         procedure = playdate_allocator_proc,
-        data = nil,
+        data      = rawptr(api.system.realloc),
     }
 }
 
@@ -78,9 +78,12 @@ playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocator
     ok: bool = true
     size := u32(size)
 
+    realloc_proc :: #type proc "c" (ptr: rawptr, size: u32) -> [^]byte
+    realloc := realloc_proc(allocator_data)
+
     switch mode {
         case .Alloc, .Alloc_Non_Zeroed:
-            ptr := bindings.system.realloc(nil, u32(size))
+            ptr := realloc(nil, u32(size))
             if ptr == nil {
                 err = .Out_Of_Memory
                 data = nil
@@ -90,7 +93,7 @@ playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocator
             }
         
         case .Free:
-            _ = bindings.system.realloc(old_memory, 0)
+            _ = realloc(old_memory, 0)
 
         case .Free_All:
             return nil, .Mode_Not_Implemented
@@ -98,7 +101,7 @@ playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocator
         case .Resize_Non_Zeroed:
             fallthrough
         case .Resize:
-            ptr := bindings.system.realloc(old_memory, u32(size))
+            ptr := realloc(old_memory, u32(size))
             if ptr == nil {
                 err = .Out_Of_Memory
                 data = nil
