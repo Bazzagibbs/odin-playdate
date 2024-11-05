@@ -1,4 +1,4 @@
-// Odin bindings for the Playdate C API Version 2.2.0
+// Odin bindings for the Playdate C API
 // For full documentation, see https://sdk.play.date/#developing-in-c
 //
 // ## Prerequisites 

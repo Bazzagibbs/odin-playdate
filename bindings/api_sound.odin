@@ -135,6 +135,7 @@ Api_Sound_Signal_Procs :: struct {
     get_value:        proc "c" (signal: Sound_Synth_Signal) -> f32,
     set_value_scale:  proc "c" (signal: Sound_Synth_Signal, scale: f32),
     set_value_offset: proc "c" (signal: Sound_Synth_Signal, offset: f32),
+    new_signal_for_value: proc "c" (signal: Sound_Synth_Signal_Value) -> Sound_Synth_Signal,
 }
 
 
@@ -261,6 +262,9 @@ Api_Sound_Synth_Procs :: struct {
     // 2.4
     set_generator:            proc "c" (synth: Sound_Synth, stereo: b32, render: Sound_Synth_Render_Proc, note_on: Sound_Synth_Note_On_Proc, release: Sound_Synth_Release_Proc, dealloc: Sound_Synth_Dealloc_Proc, copy_user_data: Sound_Synth_Copy_Userdata_Proc, user_data: rawptr),
     copy:                     proc "c" (synth: Sound_Synth) -> Sound_Synth,
+
+    // 2.6
+    clear_envelope:           proc "c" (synth: Sound_Synth),
 }
 
 

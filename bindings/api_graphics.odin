@@ -53,6 +53,18 @@ Gfx_Polygon_Fill_Rule :: enum {
     even_odd,
 }
 
+Gfx_Text_Wrapping_Mode :: enum {
+    clip,
+    character,
+    word,
+}
+
+Gfx_Text_Alignment :: enum {
+    left,
+    center,
+    right,
+}
+
 // =================================================================
 
 Video_Player    :: distinct Handle
@@ -174,6 +186,9 @@ Api_Graphics_Procs :: struct {
     set_pixel                  : proc "c" (x, y: c.int, color: Gfx_Color),
     get_bitmap_pixel           : proc "c" (bitmap: Bitmap, x, y: c.int) -> Gfx_Solid_Color,
     get_bitmap_table_info      : proc "c" (table: Gfx_Bitmap_Table, count, width: ^c.int),
+    
+    // 2.6
+    draw_text_in_rect          : proc "c" (text: cstring, length: c.size_t, encoding: Gfx_String_Encoding, x, y, width, height: c.int, wrap: Gfx_Text_Wrapping_Mode, align: Gfx_Text_Alignment),
 }
 
 // =================================================================

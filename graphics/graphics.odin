@@ -41,6 +41,9 @@ Color               :: bindings.Gfx_Color
 
 Polygon_Fill_Rule   :: bindings.Gfx_Polygon_Fill_Rule
 
+Text_Wrapping_Mode  :: bindings.Gfx_Text_Wrapping_Mode
+Text_Alignment      :: bindings.Gfx_Text_Alignment
+
 // =================================================================
 
 
@@ -168,7 +171,16 @@ draw_scaled_bitmap :: proc "contextless" (bitmap: Bitmap, x, y: i32, x_scale, y_
 
 // Draws the given text using the provided options. 
 // If no font has been set with setFont, the default system font Asheville Sans 14 Light is used.
-draw_text :: proc "contextless" (text: cstring, length: c.size_t, encoding: String_Encoding, x, y: i32) -> i32 {
+draw_text :: proc {
+    draw_text_string,
+    draw_text_cstring,
+}
+
+draw_text_string :: proc "contextless" (text: string, encoding: String_Encoding, x, y: i32) -> i32 {
+    return bindings.graphics.draw_text(cstring(raw_data(text)), c.size_t(len(text)), encoding, x, y)
+}
+
+draw_text_cstring :: proc "contextless" (text: cstring, length: c.size_t, encoding: String_Encoding, x, y: i32) -> i32 {
     return bindings.graphics.draw_text(text, length, encoding, x, y)
 }
 
@@ -279,7 +291,16 @@ get_glyph_kerning :: proc "contextless" (glyph: Font_Glyph, glyph_code, next_cod
 }
 
 // returns the width of the given text in the given font.
-get_text_width :: proc "contextless" (font: Font, text: cstring, length: c.size_t, encoding: String_Encoding, tracking: i32) -> i32 {
+get_text_width :: proc {
+    get_text_width_string,
+    get_text_width_cstring,
+}
+
+get_text_width_string :: proc "contextless" (font: Font, text: string, encoding: String_Encoding, tracking: i32) -> i32 { 
+    return bindings.graphics.get_text_width(font, cstring(raw_data(text)), c.size_t(len(text)), encoding, tracking)
+}
+
+get_text_width_cstring :: proc "contextless" (font: Font, text: cstring, length: c.size_t, encoding: String_Encoding, tracking: i32) -> i32 {
     return bindings.graphics.get_text_width(font, text, length, encoding, tracking)
 }
 
@@ -462,4 +483,17 @@ get_bitmap_pixel :: proc "contextless" (bitmap: Bitmap, x, y: i32) -> Solid_Colo
 get_bitmap_table_info :: proc "contextless" (table: Bitmap_Table) -> (count, cells_wide: i32) {
     bindings.graphics.get_bitmap_table_info(table, &count, &cells_wide)
     return
+}
+
+draw_text_in_rect :: proc {
+    draw_text_in_rect_string,
+    draw_text_in_rect_cstring,
+}
+
+draw_text_in_rect_cstring :: proc "contextless" (text: cstring, length: c.size_t, encoding: String_Encoding, x, y, width, height: i32, wrap: Text_Wrapping_Mode, align: Text_Alignment) {
+    bindings.graphics.draw_text_in_rect(text, length, encoding, x, y, width, height, wrap, align)
+}
+
+draw_text_in_rect_string :: proc "contextless" (text: string, encoding: String_Encoding, x, y, width, height: i32, wrap: Text_Wrapping_Mode, align: Text_Alignment) {
+    bindings.graphics.draw_text_in_rect(cstring(raw_data(text)), c.size_t(len(text)), encoding, x, y, width, height, wrap, align)
 }

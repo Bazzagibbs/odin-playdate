@@ -143,6 +143,9 @@ struct playdate_sound_signal
 	float (*getValue)(PDSynthSignal* signal);
 	void (*setValueScale)(PDSynthSignal* signal, float scale);
 	void (*setValueOffset)(PDSynthSignal* signal, float offset);
+
+	// 2.6
+	PDSynthSignal* (*newSignalForValue)(PDSynthSignalValue* value);
 };
 
 #if TARGET_EXTENSION
@@ -287,6 +290,9 @@ struct playdate_sound_synth // PDSynth extends SoundSource
 	// 2.4
 	void (*setGenerator)(PDSynth* synth, int stereo, synthRenderFunc render, synthNoteOnFunc noteOn, synthReleaseFunc release, synthSetParameterFunc setparam, synthDeallocFunc dealloc, synthCopyUserdata copyUserdata, void* userdata);
 	PDSynth* (*copy)(PDSynth* synth);
+	
+	// 2.6
+	void (*clearEnvelope)(PDSynth* synth);
 };
 
 

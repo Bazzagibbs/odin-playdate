@@ -2,26 +2,33 @@
 
 ##  ⚠️⚠️ WORK IN PROGRESS ⚠️⚠️ Not ready for production
 
-Up to date with Playdate SDK version 2.5
+Up to date with Playdate SDK version 2.6
 
 Odin-lang API bindings for the [Playdate SDK](https://play.date/dev/), used to develop games for the Playdate handheld game system.
 
-While this package is documented, the original [C API documentation can be found here](https://sdk.play.date/2.0.3/Inside%20Playdate%20with%20C.html).
+While this package is documented, the original [C API documentation can be found here](https://sdk.play.date/2.6.0/Inside%20Playdate%20with%20C.html).
 
 ## Differences from the C API
 
-Some minor changes have been made to make use of Odin's features: 
+This package can be used in the same manner as the C API, or the procedures can be loaded into Odin-style packages.
 
-- Odin-style import packages: instead of `pd->graphics->video->foo()` syntax, prefer
+Note: Odin-style packages are incomplete and subject to breaking changes. If stability is important, use the C API bindings.
+
 ```odin
-import "playdate/graphics/video"
-video.foo()
+import "playdate"
+import "playdate/graphics" // not needed for C-style
+
+@(export)
+eventHandler :: proc "c" (pd_api: ^playdate.Api, /* ... */) {
+    // C bindings
+    err: cstring
+    my_font := pd_api.graphics.load_font("my/font/path", &out_err)
+
+    // Odin-style
+    playdate.load_api(pd_api) // call on init
+    my_font, err := graphics.load_font("my/font/path")
+}
 ```
-- Procedures with `out` parameters instead use multiple return values.
-- `int` success/fail return flags instead use `(ok: bool)` returns.
-- Procedures that encode a failure state as a specific value (e.g. "Returns -1 on failure") now also return `ok = false` in addition to the encoded state
-- Procedures that take a buffer pointer + length to populate (e.g. `file.read(...)`) instead take a slice
-- Procedures that take a `void *userdata` parameter instead support `context.user_ptr`
 
 ## Other features
 
@@ -43,14 +50,6 @@ Playdate applications are libraries that export the following procedure:
 @(export)
 eventHandler :: proc "c" (pd_api: ^playdate.Api, event: playdate.System_Event, arg: u32) -> i32
 ```
-
-The API can be used in two ways:
- - By loading the function pointers into the package's vtables with `playdate.init(pd_api)`.
- - As you would with the C api by passing the `pd_api` handle as userdata.
-
- Using the latter option may be more difficult and many Odin features will not be available.
-
-`playdate.init()` captures its context and uses it for callbacks where possible, so make sure your context is set up before it is called.
 
 ## Compiling for the Playdate
 
