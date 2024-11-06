@@ -62,7 +62,7 @@ set_background_color :: proc "contextless" (color: Solid_Color) {
 // DEPRECATED in favor of `set_stenciL_image`, which adds a "tile" flag.
 // 
 // Sets the stencil used for drawing.
-set_stencil :: proc "contextless" (stencil: Bitmap) {
+set_stencil :: proc "contextless" (stencil: ^Bitmap) {
     _procs.set_stencil(stencil)
 }
 
@@ -95,7 +95,7 @@ set_line_cap_style :: proc "contextless" (end_cap_style: Line_Cap_Style) {
 }
 
 // Sets the font to use in subsequent `draw_text()` calls.
-set_font :: proc "contextless" (font: Font) {
+set_font :: proc "contextless" (font: ^Font) {
     _procs.set_font(font)
 }
 
@@ -107,7 +107,7 @@ set_text_tracking :: proc "contextless" (tracking: i32) {
 // Push a new drawing context for drawing into the given bitmap. 
 // 
 // If `target` is nil, the drawing procedures will use the display framebuffer.
-push_context :: proc "contextless" (target: Bitmap) {
+push_context :: proc "contextless" (target: ^Bitmap) {
     _procs.push_context(target)
 }
 
@@ -119,12 +119,12 @@ pop_context :: proc "contextless" () {
 
 
 // Draws the `bitmap` with its upper-left corner at location `x, y`, using the given flip orientation.
-draw_bitmap :: proc "contextless" (bitmap: Bitmap, x, y: i32, flip: Bitmap_Flip) {
+draw_bitmap :: proc "contextless" (bitmap: ^Bitmap, x, y: i32, flip: Bitmap_Flip) {
     _procs.draw_bitmap(bitmap, x, y, flip)
 }
 
 // Draws the `bitmap` with its upper-left corner at location `x, y` tiled inside a `width` by `height` rectangle.
-tile_bitmap :: proc "contextless" (bitmap: Bitmap, x, y, width, height: i32, flip: Bitmap_Flip) {
+tile_bitmap :: proc "contextless" (bitmap: ^Bitmap, x, y, width, height: i32, flip: Bitmap_Flip) {
     _procs.tile_bitmap(bitmap, x, y, width, height, flip)
 }
 
@@ -167,7 +167,7 @@ fill_ellipse :: proc "contextless" (x, y, width, height: i32, start_angle, end_a
 // Draws the bitmap scaled to `x_scale` and `y_scale` with its upper-left corner at location `x, y`. 
 // 
 // Note that `flip` is not available when drawing scaled bitmaps but negative scale values will achieve the same effect.
-draw_scaled_bitmap :: proc "contextless" (bitmap: Bitmap, x, y: i32, x_scale, y_scale: f32) {
+draw_scaled_bitmap :: proc "contextless" (bitmap: ^Bitmap, x, y: i32, x_scale, y_scale: f32) {
     _procs.draw_scaled_bitmap(bitmap, x, y, x_scale, y_scale)
 }
 
@@ -187,28 +187,28 @@ draw_text_cstring :: proc "contextless" (text: cstring, length: c.size_t, encodi
 }
 
 // Allocates and returns a new `width` by `height` Bitmap filled with `bg_color`.
-new_bitmap :: proc "contextless" (width, height: i32, bg_color: Color) -> Bitmap {
+new_bitmap :: proc "contextless" (width, height: i32, bg_color: Color) -> ^Bitmap {
     return _procs.new_bitmap(width, height, bg_color)
 }
 
 // Frees the given `bitmap`.
-free_bitmap :: proc "contextless" (bitmap: Bitmap) {
+free_bitmap :: proc "contextless" (bitmap: ^Bitmap) {
     _procs.free_bitmap(bitmap)
 }
 
 // Allocates and returns a new Bitmap from the file at `path`. If there is no file at `path`, the procedure returns nil.
-load_bitmap :: proc "contextless" (path: cstring) -> (bitmap: Bitmap, err: cstring) {
+load_bitmap :: proc "contextless" (path: cstring) -> (bitmap: ^Bitmap, err: cstring) {
     bitmap = _procs.load_bitmap(path, &err)
     return
 }
 
 // Returns a new Bitmap that is an exact copy of `bitmap`.
-copy_bitmap :: proc "contextless" (bitmap: Bitmap) -> Bitmap {
+copy_bitmap :: proc "contextless" (bitmap: ^Bitmap) -> ^Bitmap {
     return _procs.copy_bitmap(bitmap)
 }
 
 // Loads the image at `path` into the previously allocated `bitmap`.
-load_into_bitmap :: proc "contextless" (path: cstring, bitmap: Bitmap) -> (err: cstring) {
+load_into_bitmap :: proc "contextless" (path: cstring, bitmap: ^Bitmap) -> (err: cstring) {
     _procs.load_into_bitmap(path, bitmap, &err)
     return
 }
@@ -217,7 +217,7 @@ load_into_bitmap :: proc "contextless" (path: cstring, bitmap: Bitmap) -> (err: 
 // 
 // The data is 1 bit per pixel packed format, in MSB order; in other words, the high bit of the first byte in `data` is the top left pixel of the image. 
 // If the bitmap has a mask, a multipointer of its data is returned in `mask`, else nil is returned.
-get_bitmap_data :: proc "contextless" (bitmap: Bitmap) -> (width, height, row_bytes: i32, mask, data: []u8) {
+get_bitmap_data :: proc "contextless" (bitmap: ^Bitmap) -> (width, height, row_bytes: i32, mask, data: []u8) {
     mask_mp: [^]u8
     data_mp: [^]u8
     _procs.get_bitmap_data(bitmap, &width, &height, &row_bytes, &mask_mp, &data_mp)
@@ -227,47 +227,47 @@ get_bitmap_data :: proc "contextless" (bitmap: Bitmap) -> (width, height, row_by
 }
 
 // Clears `bitmap`, filling with the given `background_color`.
-clear_bitmap :: proc "contextless" (bitmap: Bitmap, bg_color: Color) {
+clear_bitmap :: proc "contextless" (bitmap: ^Bitmap, bg_color: Color) {
     _procs.clear_bitmap(bitmap, bg_color)
 }
 
 // Returns a new, rotated and scaled Bitmap based on the given `bitmap`.
-rotated_bitmap :: proc "contextless" (bitmap: Bitmap, rotation, x_scale, y_scale: f32) -> (rotated: Bitmap, allocated_size: i32) {
+rotated_bitmap :: proc "contextless" (bitmap: ^Bitmap, rotation, x_scale, y_scale: f32) -> (rotated: ^Bitmap, allocated_size: i32) {
     rotated = _procs.rotated_bitmap(bitmap, rotation, x_scale, y_scale, &allocated_size)
     return
 }
 
 // Allocates and returns a new Bitmap_Table that can hold `count` `width` by `height` Bitmaps.
-new_bitmap_table :: proc "contextless" (count, width, height: i32) {
-    _procs.new_bitmap_table(count, width, height)
+new_bitmap_table :: proc "contextless" (count, width, height: i32) -> ^Bitmap_Table {
+    return _procs.new_bitmap_table(count, width, height)
 }
 
 // Frees the given Bitmap_Table.
-free_bitmap_table :: proc "contextless" (table: Bitmap_Table) {
+free_bitmap_table :: proc "contextless" (table: ^Bitmap_Table) {
     _procs.free_bitmap_table(table)
 }
 
 // Loads the imagetable at `path` into the previously allocated `table`.
-load_bitmap_table :: proc "contextless" (path: cstring) -> (table: Bitmap_Table, err: cstring) {
+load_bitmap_table :: proc "contextless" (path: cstring) -> (table: ^Bitmap_Table, err: cstring) {
     table = _procs.load_bitmap_table(path, &err)
     return
 }
 
 // Returns the Font object for the font file at `path`. 
 // In case of error, `err` points to a string describing the error.
-load_into_bitmap_table :: proc "contextless" (path: cstring, table: Bitmap_Table) -> (err: cstring) {
+load_into_bitmap_table :: proc "contextless" (path: cstring, table: ^Bitmap_Table) -> (err: cstring) {
     _procs.load_into_bitmap_table(path, table, &err)
     return
 }
 
 // Returns the `idx` bitmap in table, If `idx` is out of bounds, the function returns nil.
-get_table_bitmap :: proc "contextless" (table: Bitmap_Table, idx: i32) -> Bitmap {
+get_table_bitmap :: proc "contextless" (table: ^Bitmap_Table, idx: i32) -> ^Bitmap {
     return _procs.get_table_bitmap(table, idx)
 }
 
 
 // Returns the Font object for the font file at `path`. 
-load_font :: proc "contextless" (path: cstring) -> (font: Font, err: cstring) {
+load_font :: proc "contextless" (path: cstring) -> (font: ^Font, err: cstring) {
     font = _procs.load_font(path, &err)
     return
 }
@@ -277,18 +277,18 @@ load_font :: proc "contextless" (path: cstring) -> (font: Font, err: cstring) {
 // Each Font_Page contains information for 256 characters; 
 // specifically, if `(ch1 & ~0xff) == (ch2 & ~0xff)` then `ch1` and `ch2` belong to the same page and the same 
 // Font_Page can be used to fetch the character data for both instead of searching for the page twice.
-get_font_page :: proc "contextless" (font: Font, ch: u32) -> Font_Page {
+get_font_page :: proc "contextless" (font: ^Font, ch: u32) -> ^Font_Page {
     return _procs.get_font_page(font, ch)
 }
 
 // Returns a Font_Glyph object for character `ch` in Font_Page `page`, and optionally returns the glyph's bitmap and advance value.
-get_page_glyph :: proc "contextless" (page: Font_Page, ch: u32) -> (glyph: Font_Glyph, bitmap: Bitmap, advance: i32) {
+get_page_glyph :: proc "contextless" (page: ^Font_Page, ch: u32) -> (glyph: ^Font_Glyph, bitmap: ^Bitmap, advance: i32) {
     glyph = _procs.get_page_glyph(page, ch, &bitmap, &advance)
     return
 }
 
 // Returns the kerning adjustment between characters `glyph_code` and `next_code` as specified by the font.
-get_glyph_kerning :: proc "contextless" (glyph: Font_Glyph, glyph_code, next_code: u32) -> i32 {
+get_glyph_kerning :: proc "contextless" (glyph: ^Font_Glyph, glyph_code, next_code: u32) -> i32 {
     return _procs.get_glyph_kerning(glyph, glyph_code, next_code)
 }
 
@@ -298,11 +298,11 @@ get_text_width :: proc {
     get_text_width_cstring,
 }
 
-get_text_width_string :: proc "contextless" (font: Font, text: string, encoding: String_Encoding, tracking: i32) -> i32 { 
+get_text_width_string :: proc "contextless" (font: ^Font, text: string, encoding: String_Encoding, tracking: i32) -> i32 { 
     return _procs.get_text_width(font, cstring(raw_data(text)), c.size_t(len(text)), encoding, tracking)
 }
 
-get_text_width_cstring :: proc "contextless" (font: Font, text: cstring, length: c.size_t, encoding: String_Encoding, tracking: i32) -> i32 {
+get_text_width_cstring :: proc "contextless" (font: ^Font, text: cstring, length: c.size_t, encoding: String_Encoding, tracking: i32) -> i32 {
     return _procs.get_text_width(font, text, length, encoding, tracking)
 }
 
@@ -327,14 +327,14 @@ get_display_frame :: proc "contextless" () -> []u8 {
 
 // Only valid in the Simulator, returns the debug framebuffer as a bitmap. 
 // Procedure is nil on device.
-get_debug_bitmap :: proc "contextless" () -> Bitmap {
+get_debug_bitmap :: proc "contextless" () -> ^Bitmap {
     return _procs.get_debug_bitmap()
 }
 
 // Returns a copy the contents of the working frame buffer as a bitmap. 
 // 
 // Allocates: The caller is responsible for freeing the returned bitmap with `free_bitmap()`.
-copy_frame_buffer_bitmap :: proc "contextless" () -> Bitmap {
+copy_frame_buffer_bitmap :: proc "contextless" () -> ^Bitmap {
     return _procs.copy_frame_buffer_bitmap()
 }
 
@@ -358,15 +358,15 @@ display :: proc "contextless" () {
 
 // Sets `color` to an 8 x 8 pattern using the given `bitmap`. 
 // `x, y` indicates the top left corner of the 8 x 8 pattern.
-set_color_to_pattern :: proc "contextless" (color: Color, bitmap: Bitmap, x, y: i32) {
+set_color_to_pattern :: proc "contextless" (color: Color, bitmap: ^Bitmap, x, y: i32) {
     _procs.set_color_to_pattern(color, bitmap, x, y)
 }
 
 // Returns true if any of the opaque pixels in `bitmap_1` when positioned at `x_1, y1` with `flip_1` 
 // overlap any of the opaque pixels in `bitmap_2` at `x_2, y_2` with `flip_2` within the non-empty `rect`, 
 // or false if no pixels overlap or if one or both fall completely outside of `rect`.
-check_mask_collision :: proc "contextless" (bitmap_1: Bitmap, x_1, y_1: i32, flip_1: Bitmap_Flip, 
-                                            bitmap_2: Bitmap, x_2, y_2: i32, flip_2: Bitmap_Flip,
+check_mask_collision :: proc "contextless" (bitmap_1: ^Bitmap, x_1, y_1: i32, flip_1: Bitmap_Flip, 
+                                            bitmap_2: ^Bitmap, x_2, y_2: i32, flip_2: Bitmap_Flip,
                                             rect: Rect) -> b32 {
 
     return _procs.check_mask_collision(bitmap_1, x_1, y_1, flip_1,
@@ -393,7 +393,7 @@ fill_polygon :: proc "contextless" (points: [][2]i32, color: Color, fill_rule: P
 }
 
 // Returns the height of the given font.
-get_font_height :: proc "contextless" (font: Font) -> u8 {
+get_font_height :: proc "contextless" (font: ^Font) -> u8 {
     return _procs.get_font_height(font)
 }
 
@@ -403,7 +403,7 @@ get_font_height :: proc "contextless" (font: Font) -> u8 {
 // Returns a bitmap containing the contents of the display buffer. 
 // 
 // The system owns this bitmap - do not free it!
-get_display_buffer_bitmap :: proc "contextless" () -> Bitmap {
+get_display_buffer_bitmap :: proc "contextless" () -> ^Bitmap {
     return _procs.get_display_buffer_bitmap()
 }
 
@@ -411,7 +411,7 @@ get_display_buffer_bitmap :: proc "contextless" () -> Bitmap {
 // as given by proportions `x_center` and `y_center` at `x`, `y`; that is: if `x_center` and 
 // `y_center` are both 0.5 the center of the image is at (`x`,`y`), if `x_cetner` and `y_center` 
 // are both 0 the top left corner of the image (before rotation) is at (`x`,`y`), etc.
-draw_rotated_bitmap :: proc "contextless" (bitmap: Bitmap, x, y: i32, rotation: f32, center_x, center_y, x_scale, y_scale: f32) {
+draw_rotated_bitmap :: proc "contextless" (bitmap: ^Bitmap, x, y: i32, rotation: f32, center_x, center_y, x_scale, y_scale: f32) {
     _procs.draw_rotated_bitmap(bitmap, x, y, rotation, center_x, center_y, x_scale, y_scale)
 }
 
@@ -424,7 +424,7 @@ set_text_leading :: proc "contextless" (line_height_adjustment: i32) {
 // 1.8
 
 // Sets a mask image for the given bitmap. The set mask must be the same size as the target bitmap.
-set_bitmap_mask :: proc "contextless" (bitmap, mask: Bitmap) -> i32 {
+set_bitmap_mask :: proc "contextless" (bitmap, mask: ^Bitmap) -> i32 {
     return _procs.set_bitmap_mask(bitmap, mask)
 }
 
@@ -432,7 +432,7 @@ set_bitmap_mask :: proc "contextless" (bitmap, mask: Bitmap) -> i32 {
 // Gets a mask image for the given `bitmap`. 
 //
 // If the image doesn't have a mask, `get_bitmap_mask()` returns nil.
-get_bitmap_mask :: proc "contextless" (bitmap: Bitmap) -> Bitmap {
+get_bitmap_mask :: proc "contextless" (bitmap: ^Bitmap) -> ^Bitmap {
     return _procs.get_bitmap_mask(bitmap)
 }
 
@@ -441,7 +441,7 @@ get_bitmap_mask :: proc "contextless" (bitmap: Bitmap) -> Bitmap {
 // Sets the stencil used for drawing. If `tile` is true the stencil image will be tiled. 
 // 
 // Tiled stencils must have width equal to a multiple of 32 pixels.
-set_stencil_image :: proc "contextless" (stencil: Bitmap, tile: i32) {
+set_stencil_image :: proc "contextless" (stencil: ^Bitmap, tile: i32) {
     _procs.set_stencil_image(stencil, tile)
 }
 
@@ -451,7 +451,7 @@ set_stencil_image :: proc "contextless" (stencil: Bitmap, tile: i32) {
 // Returns a Font object wrapping the Font_Data `data` comprising the contents (minus 16-byte header) of an uncompressed pft file. 
 // 
 // `wide` corresponds to the flag in the header indicating whether the font contains glyphs at codepoints above U+1FFFF.
-make_font_from_data :: proc "contextless" (data: Font_Data, wide: b32) -> Font {
+make_font_from_data :: proc "contextless" (data: ^Font_Data, wide: b32) -> ^Font {
     return _procs.make_font_from_data(data, wide)
 }
 
@@ -477,12 +477,12 @@ set_pixel :: proc "contextless" (x, y: i32, color: Color) {
 // Gets the color of the pixel at (x,y) in the given bitmap. 
 // If the coordinate is outside the bounds of the bitmap, or if the bitmap has a mask and the pixel is marked transparent, 
 // the function returns .clear; otherwise the return value is .white or .black.
-get_bitmap_pixel :: proc "contextless" (bitmap: Bitmap, x, y: i32) -> Solid_Color {
+get_bitmap_pixel :: proc "contextless" (bitmap: ^Bitmap, x, y: i32) -> Solid_Color {
     return _procs.get_bitmap_pixel(bitmap, x, y)
 }
 
 // Returns the bitmap table’s image count (if not nil) and number of cells across (ditto).
-get_bitmap_table_info :: proc "contextless" (table: Bitmap_Table) -> (count, cells_wide: i32) {
+get_bitmap_table_info :: proc "contextless" (table: ^Bitmap_Table) -> (count, cells_wide: i32) {
     _procs.get_bitmap_table_info(table, &count, &cells_wide)
     return
 }

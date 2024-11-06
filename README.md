@@ -73,7 +73,7 @@ update :: proc "c" (user_data: rawptr) -> playdate.Update_Result {
 
     log.info("Hellope") // logs to Playdate console
 
-    return .update_display
+    return .Update_Display
 }
 ```
 

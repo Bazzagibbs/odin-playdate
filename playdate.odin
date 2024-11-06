@@ -13,6 +13,7 @@
 package playdate
 
 import "base:runtime"
+import "core:net"
 
 Api :: struct { 
     system      : ^Api_System_Procs,
@@ -41,40 +42,40 @@ Rect :: struct {
 }
 
 Bitmap_Flip :: enum {
-    unflipped,
-    flipped_x,
-    flipped_y,
-    flipped_xy,
+    Unflipped,
+    Flipped_X,
+    Flipped_Y,
+    Flipped_XY,
 }
 
 Bitmap_Draw_Mode :: enum {
-    copy,
-    white_transparent,
-    black_transparent,
-    fill_white,
-    fill_black,
-    xor,
-    nxor,
-    inverted,
+    Copy,
+    White_Transparent,
+    Black_Transparent,
+    Fill_White,
+    Fill_Black,
+    XOR,
+    NXOR,
+    Inverted,
 }
 
 System_Event :: enum {
-    init,
-    init_lua,
-    lock,
-    unlock,
-    pause,
-    resume,
-    terminate,
-    key_pressed,
-    key_released,
-    low_power,
+    Init,
+    Init_Lua,
+    Lock,
+    Unlock,
+    Pause,
+    Resume,
+    Terminate,
+    Key_Pressed,
+    Key_Peleased,
+    Low_Power,
 }
 
-Handle :: distinct rawptr
+Opaque_Struct :: distinct struct{}
 
-Bitmap :: distinct Handle
-Sprite :: distinct Handle
+Bitmap :: distinct Opaque_Struct
+Sprite :: distinct Opaque_Struct
 
 Package_ID :: enum {
     system,

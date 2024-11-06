@@ -5,18 +5,18 @@ import "core:c"
 Buttons :: bit_set[Button; u32]
 
 Button :: enum {
-    left    = 0,
-    right   = 1,
-    up      = 2,
-    down    = 3,
-    b       = 4,
-    a       = 5,
+    Left    = 0,
+    Right   = 1,
+    Up      = 2,
+    Down    = 3,
+    B       = 4,
+    A       = 5,
 }
 
 Language :: enum {
-    english,
-    japanese,
-    unknown,
+    English,
+    Japanese,
+    Unknown,
 }
 
 Date_Time :: struct {
@@ -29,17 +29,17 @@ Date_Time :: struct {
     second  : u8,
 }
 
-Menu_Item :: distinct rawptr
+Menu_Item :: distinct Opaque_Struct
 
 Peripherals :: bit_set[Peripheral; u32]
 
 Peripheral :: enum u16 {
-    accelerometer   = 0,
+    Accelerometer   = 0,
 }
 
 Update_Result :: enum i32 {
-    no_display_update = 0,
-    display_update    = 1,
+    No_Update_Display = 0,
+    Update_Display    = 1,
 }
 
 Callback_Proc                :: #type proc "c" (userdata: rawptr) -> Update_Result
@@ -76,18 +76,18 @@ Api_System_Procs :: struct {
     get_flipped                    : proc "c" () -> i32,
     set_auto_lock_disabled         : proc "c" (disable: i32),
 
-    set_menu_image                 : proc "c" (bitmap: Bitmap, x_offset: i32),
-    add_menu_item                  : proc "c" (title: cstring, callback: Menu_Item_Callback_Proc, userdata: rawptr) -> Menu_Item,
-    add_checkmark_menu_item        : proc "c" (title: cstring, value: i32, callback: Menu_Item_Callback_Proc, userdata: rawptr) -> Menu_Item,
-    add_options_menu_item          : proc "c" (title: cstring, option_titles: [^]cstring, options_count: i32, callback: Menu_Item_Callback_Proc, userdata: rawptr) -> Menu_Item,
+    set_menu_image                 : proc "c" (bitmap: ^Bitmap, x_offset: i32),
+    add_menu_item                  : proc "c" (title: cstring, callback: Menu_Item_Callback_Proc, userdata: rawptr) -> ^Menu_Item,
+    add_checkmark_menu_item        : proc "c" (title: cstring, value: i32, callback: Menu_Item_Callback_Proc, userdata: rawptr) -> ^Menu_Item,
+    add_options_menu_item          : proc "c" (title: cstring, option_titles: [^]cstring, options_count: i32, callback: Menu_Item_Callback_Proc, userdata: rawptr) -> ^Menu_Item,
     remove_all_menu_items          : proc "c" (),
-    remove_menu_item               : proc "c" (menu_item: Menu_Item),
-    get_menu_item_value            : proc "c" (menu_item: Menu_Item) -> i32,
-    set_menu_item_value            : proc "c" (menu_item: Menu_Item, value: i32),
-    get_menu_item_title            : proc "c" (menu_item: Menu_Item) -> cstring,
-    set_menu_item_title            : proc "c" (menu_item: Menu_Item, title: cstring),
-    get_menu_item_userdata         : proc "c" (menu_item: Menu_Item) -> rawptr,
-    set_menu_item_userdata         : proc "c" (menu_item: Menu_Item, userdata: rawptr),
+    remove_menu_item               : proc "c" (menu_item: ^Menu_Item),
+    get_menu_item_value            : proc "c" (menu_item: ^Menu_Item) -> i32,
+    set_menu_item_value            : proc "c" (menu_item: ^Menu_Item, value: i32),
+    get_menu_item_title            : proc "c" (menu_item: ^Menu_Item) -> cstring,
+    set_menu_item_title            : proc "c" (menu_item: ^Menu_Item, title: cstring),
+    get_menu_item_userdata         : proc "c" (menu_item: ^Menu_Item) -> rawptr,
+    set_menu_item_userdata         : proc "c" (menu_item: ^Menu_Item, userdata: rawptr),
 
     get_reduce_flashing            : proc "c" () -> i32,
 

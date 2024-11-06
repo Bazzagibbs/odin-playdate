@@ -1,10 +1,10 @@
 package playdate
 
-Lua_State :: distinct Handle
+Lua_State :: distinct Opaque_Struct
 
-Lua_C_Function :: #type proc "c" (state: Lua_State) -> i32
+Lua_C_Function :: #type proc "c" (state: ^Lua_State) -> i32
 
-Lua_UD_Object :: distinct Handle // User Defined?
+Lua_UD_Object :: distinct Opaque_Struct // User Defined?
 
 Lua_Value_Type :: enum {
     Int,
@@ -59,10 +59,10 @@ Api_Lua_Procs :: struct {
     get_arg_float              : proc "c" (pos: i32) -> f32,
     get_arg_string             : proc "c" (pos: i32) -> cstring,
     get_arg_bytes              : proc "c" (pos: i32, out_len: ^u32) -> [^]byte,
-    get_arg_object             : proc "c" (pos: i32, type: cstring, out_ud: ^Lua_UD_Object) -> rawptr,
+    get_arg_object             : proc "c" (pos: i32, type: cstring, out_ud: ^^Lua_UD_Object) -> rawptr,
 
-    get_bitmap                 : proc "c" (pos: i32) -> Bitmap,
-    get_sprite                 : proc "c" (pos: i32) -> Sprite,
+    get_bitmap                 : proc "c" (pos: i32) -> ^Bitmap,
+    get_sprite                 : proc "c" (pos: i32) -> ^Sprite,
 
     push_nil                   : proc "c" (),
     push_bool                  : proc "c" (val: i32),
@@ -70,15 +70,15 @@ Api_Lua_Procs :: struct {
     push_float                 : proc "c" (val: f32),
     push_string                : proc "c" (str: cstring),
     push_bytes                 : proc "c" (bytes: [^]byte, length: u32),
-    push_bitmap                : proc "c" (bitmap: Bitmap),
-    push_sprite                : proc "c" (sprite: Sprite),
+    push_bitmap                : proc "c" (bitmap: ^Bitmap),
+    push_sprite                : proc "c" (sprite: ^Sprite),
 
-    push_object                : proc "c" (obj: rawptr, type: cstring, n_values: i32) -> Lua_UD_Object,
-    retain_object              : proc "c" (obj: Lua_UD_Object) -> Lua_UD_Object,
-    release_object             : proc "c" (obj: Lua_UD_Object),
+    push_object                : proc "c" (obj: rawptr, type: cstring, n_values: i32) -> ^Lua_UD_Object,
+    retain_object              : proc "c" (obj: ^Lua_UD_Object) -> ^Lua_UD_Object,
+    release_object             : proc "c" (obj: ^Lua_UD_Object),
 
-    set_user_value             : proc "c" (obj: Lua_UD_Object, slot: u32),
-    get_user_value             : proc "c" (obj: Lua_UD_Object, slot: u32) -> i32,
+    set_user_value             : proc "c" (obj: ^Lua_UD_Object, slot: u32),
+    get_user_value             : proc "c" (obj: ^Lua_UD_Object, slot: u32) -> i32,
 
     call_function_deprecated   : proc "c" (name: cstring, n_args: i32),
     call_function              : proc "c" (name: cstring, n_args: i32, out_err: ^cstring) -> i32,

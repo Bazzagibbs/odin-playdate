@@ -4,7 +4,7 @@ import pd ".."
 
 File                :: pd.File
 EOF                 :: pd.EOF
-Result              :: pd.Result
+Result              :: pd.File_Result
 Open_Modes          :: pd.Open_Modes
 Open_Mode           :: pd.Open_Mode
 Stat                :: pd.Stat
@@ -72,19 +72,19 @@ rename :: proc "contextless" (from, to: cstring) -> Result {
 // `.write` and `.append` always write to the data folder. `file` will return nil if a file at path cannot be opened, and `file.get_err()` will describe the error. 
 //
 // The filesystem has a limit of 64 simultaneous open files.
-open :: proc "contextless" (name: cstring, mode: Open_Modes) -> (file: File) {
+open :: proc "contextless" (name: cstring, mode: Open_Modes) -> (file: ^File) {
     return _procs.open(name, mode)
 }
 
 // Closes the given file handle. 
-close :: proc "contextless" (file: File) -> Result {
+close :: proc "contextless" (file: ^File) -> Result {
     return _procs.close(file)
 }
 
 // Reads bytes from the file into the specified buffer, up to the length of the buffer. 
 //
 // Returns the number of bytes read (0 indicating end of file), or -1 in case of error.
-read :: proc "contextless" (file: File, buffer: []byte) -> (bytes_read: i32) {
+read :: proc "contextless" (file: ^File, buffer: []byte) -> (bytes_read: i32) {
     return _procs.read(file, raw_data(buffer), u32(len(buffer)))
 }
 
@@ -92,19 +92,19 @@ read :: proc "contextless" (file: File, buffer: []byte) -> (bytes_read: i32) {
 // Writes a buffer of bytes to the file. 
 //
 // Returns the number of bytes written, or -1 in case of error.
-write :: proc "contextless" (file: File, buffer: []byte) -> (bytes_written: i32) {
+write :: proc "contextless" (file: ^File, buffer: []byte) -> (bytes_written: i32) {
     return _procs.write(file, raw_data(buffer), u32(len(buffer)))
 }
 
 // Flushes the output buffer of file immediately. 
 //
 // Returns the number of bytes written, or -1 in case of error.
-flush :: proc "contextless" (file: File) -> (bytes_written: i32) {
+flush :: proc "contextless" (file: ^File) -> (bytes_written: i32) {
     return _procs.flush(file)
 }
 
 // Returns the current read/write offset in the given file handle, or -1 on error.
-tell :: proc "contextless" (file: File) -> (current_offset: i32) {
+tell :: proc "contextless" (file: ^File) -> (current_offset: i32) {
     return _procs.tell(file)
 }
 
@@ -113,7 +113,7 @@ tell :: proc "contextless" (file: File) -> (current_offset: i32) {
 // * `.set` is relative to the beginning of the file.
 // * `.cur` is relative to the current position of the file pointer.
 // * `.end` is relative to the end of the file.  
-seek :: proc "contextless" (file: File, position: i32, whence: Seek_Mode) -> Result {
+seek :: proc "contextless" (file: ^File, position: i32, whence: Seek_Mode) -> Result {
     return _procs.seek(file, position, whence)
 }
 
