@@ -1,9 +1,11 @@
 package playdate_display
 
-import "../bindings"
+import pd ".."
 
-Scale_Flag  :: bindings.Display_Scale_Flag
-Mosaic_Flag :: bindings.Display_Mosaic_Flag
+Scale_Flag  :: pd.Scale_Flag
+Mosaic_Flag :: pd.Mosaic_Flag
+
+_procs : pd.Api_Display_Procs
 
 // =================================================================
 
@@ -12,7 +14,7 @@ Mosaic_Flag :: bindings.Display_Mosaic_Flag
 //
 // e.g., if the scale is 2, this function returns 120 instead of 240. 
 get_width :: proc "contextless" () -> i32 {
-    return bindings.display.get_width()
+    return _procs.get_width()
 }
 
 
@@ -20,7 +22,7 @@ get_width :: proc "contextless" () -> i32 {
 // 
 // e.g., if the scale is 2, this function returns 200 instead of 400.
 get_height :: proc "contextless" () -> i32 {
-    return bindings.display.get_height()
+    return _procs.get_height()
 }
 
 
@@ -31,13 +33,13 @@ get_height :: proc "contextless" () -> i32 {
 // If rate is 0, the game’s update callback (either Lua’s `playdate.update()` or the function specified by `system.setUpdateCallback()`) is called as soon as possible. 
 // Since the display refreshes line-by-line, and unchanged lines aren’t sent to the display, the update cycle will be faster than 30 times a second but at an indeterminate rate.
 set_refresh_rate :: proc "contextless" (rate: f32) {
-    bindings.display.set_refresh_rate(rate)
+    _procs.set_refresh_rate(rate)
 }
 
 
 // If `inverted` is true, the frame buffer is drawn inverted—black instead of white, and vice versa.
 set_inverted :: proc "contextless" (inverted: b32) {
-    bindings.display.set_inverted(inverted)
+    _procs.set_inverted(inverted)
 }
 
 
@@ -46,7 +48,7 @@ set_inverted :: proc "contextless" (inverted: b32) {
 // The top-left corner of the frame buffer is scaled up to fill the display; 
 // e.g., if the scale is set to 4, the pixels in rectangle [0,100] x [0,60] are drawn on the screen as 4 x 4 squares.
 set_scale :: proc "contextless" (scale: Scale_Flag) {
-    bindings.display.set_scale(scale)
+    _procs.set_scale(scale)
 }
 
 
@@ -54,20 +56,30 @@ set_scale :: proc "contextless" (scale: Scale_Flag) {
 //
 // Valid x and y values are between 0 and 3, inclusive.
 set_mosaic :: proc "contextless" (x, y: Mosaic_Flag) {
-    bindings.display.set_mosaic(x, y)
+    _procs.set_mosaic(x, y)
 }
 
 
 // Flips the display on the x or y axis, or both.
 set_flipped :: proc "contextless" (x, y: b32) {
-    bindings.display.set_flipped(x, y)
+    _procs.set_flipped(x, y)
 }
 
 
 // Offsets the display by the given amount. 
 // Areas outside of the displayed area are filled with the current background color.
 set_offset :: proc "contextless" (x, y: i32) {
-    bindings.display.set_offset(x, y)
+    _procs.set_offset(x, y)
 }
 
-// // =================================================================
+// =================================================================
+
+@(init, private)
+_register_loader :: proc "contextless" () {
+    pd._loaders[.display] = _load
+}
+
+@(private)
+_load :: proc "contextless" (api: ^pd.Api) {
+    _procs = api.display^
+}

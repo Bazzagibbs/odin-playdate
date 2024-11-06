@@ -10,3 +10,7 @@ Change the game name at the top of each batch file if desired (default: "game")
 
 If a script is called with arguments, they will be passed to the `odin build` command.
 
+## Assets directory
+
+These scripts look for a directory in your project's root named "assets". If it exists, it will be copied to
+"out_x/intermediate/assets/" before calling `pdc`.

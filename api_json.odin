@@ -1,4 +1,4 @@
-package playdate_bindings
+package playdate
 
 import "core:c"
 

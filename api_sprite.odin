@@ -1,9 +1,9 @@
-package playdate_bindings
+package playdate
 
 import "core:c"
 
-Sprite_Collision_Point :: [2]f32
-Sprite_Collision_Vector :: [2]i32
+Collision_Point :: [2]f32
+Collision_Vector :: [2]i32
 
 Sprite_Collision_Response_Type :: enum {
     slide,
@@ -28,9 +28,9 @@ Sprite_Collision_Info :: struct {
     response_type   : Sprite_Collision_Response_Type,
     overlaps        : b8,
     ti              : f32,
-    move            : Sprite_Collision_Point,
-    normal          : Sprite_Collision_Vector,
-    touch           : Sprite_Collision_Point,
+    move            : Collision_Point,
+    normal          : Collision_Vector,
+    touch           : Collision_Point,
     sprite_rect     : Rect,
     other_rect      : Rect,
 }
@@ -40,11 +40,11 @@ Sprite_Collision_Info :: struct {
 // - `entry_point`: The coordinates of the first intersection between sprite and the line segment.
 // - `exit_point`: The coordinates of the second intersection between sprite and the line segment.
 Sprite_Query_Info :: struct {
-    sprite: Sprite,
-    ti_1: f32,
-    ti_2: f32,
-    entry_point: Sprite_Collision_Point,
-    exit_point: Sprite_Collision_Point,
+    sprite      : Sprite,
+    ti_1        : f32,
+    ti_2        : f32,
+    entry_point : Collision_Point,
+    exit_point  : Collision_Point,
 }
 
 Sprite_Update_Proc             :: #type proc "c" (sprite: Sprite)

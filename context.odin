@@ -1,13 +1,10 @@
-package playdate_system
-
-// Can't be in common as it uses procs from System
+package playdate
 
 import "base:runtime"
 import "core:strings"
 import "core:fmt"
 import "core:log"
 import "core:mem"
-import "../bindings"
 
 NO_DEFAULT_TEMP_ALLOCATOR :: runtime.NO_DEFAULT_TEMP_ALLOCATOR
 
@@ -21,7 +18,7 @@ _Level_Headers := [?]string{
 }
 
 // Get a context configured for Playdate applications.
-playdate_context :: proc "contextless" (api: ^bindings.Api) -> runtime.Context {
+playdate_context :: proc "contextless" (api: ^Api) -> runtime.Context {
     ctx: runtime.Context
 
     ctx.allocator      = playdate_allocator(api)
@@ -31,14 +28,14 @@ playdate_context :: proc "contextless" (api: ^bindings.Api) -> runtime.Context {
         ctx.assertion_failure_proc = playdate_assertion_failure_proc
     }
    
-    ctx.logger = playdate_logger() 
+    ctx.logger = playdate_logger(api) 
     
     return ctx
 }
 
 
 // Allocator that uses the Playdate's system allocation functions
-playdate_allocator :: proc "contextless" (api: ^bindings.Api) -> runtime.Allocator {
+playdate_allocator :: proc "contextless" (api: ^Api) -> runtime.Allocator {
     return runtime.Allocator {
         procedure = playdate_allocator_proc,
         data      = rawptr(api.system.realloc),
@@ -62,10 +59,10 @@ playdate_temp_allocator :: proc "contextless" () -> runtime.Allocator {
 
 
 // Logger that outputs to the Playdate's console
-playdate_logger :: proc "contextless" () -> runtime.Logger {
+playdate_logger :: proc "contextless" (api: ^Api) -> runtime.Logger {
     return runtime.Logger {
         procedure    = playdate_logger_proc,
-        data         = nil,
+        data         = rawptr(api.system),
         lowest_level = .Debug,
         options      = {.Level, .Time, .Procedure, .Line},
     }
@@ -125,6 +122,7 @@ playdate_allocator_proc :: proc (allocator_data: rawptr, mode: runtime.Allocator
 
 
 playdate_logger_proc :: proc(logger_data: rawptr, level: runtime.Logger_Level, text: string, options: runtime.Logger_Options, location := #caller_location) {
+    system := (^Api_System_Procs)(logger_data)
     
     sb_backing: [1024]byte
     buf := strings.builder_from_bytes(sb_backing[:len(sb_backing) - 1]) // backing is safe for string -> cstring alias
@@ -136,9 +134,9 @@ playdate_logger_proc :: proc(logger_data: rawptr, level: runtime.Logger_Level, t
 
     if log.Full_Timestamp_Opts & options != nil {
         fmt.sbprint(&buf, "[")
-        sec       := bindings.system.get_seconds_since_epoch(nil)
-        date_time :  bindings.Sys_Date_Time
-        bindings.system.convert_epoch_to_date_time(sec, &date_time)
+        sec       := system.get_seconds_since_epoch(nil)
+        date_time :  Date_Time
+        system.convert_epoch_to_date_time(sec, &date_time)
         if .Date in options { fmt.sbprintf(&buf, "%d-%02d-%02d ", date_time.year, date_time.month, date_time.day)}
         if .Time in options { fmt.sbprintf(&buf, "%02d:%02d:%02d", date_time.hour, date_time.minute, date_time.second)}
         fmt.sbprintf(&buf, "] ")
@@ -152,9 +150,9 @@ playdate_logger_proc :: proc(logger_data: rawptr, level: runtime.Logger_Level, t
 
     switch level {
         case .Debug, .Info, .Warning: 
-            bindings.system.log_to_console(output_cstr)
+            system.log_to_console(output_cstr)
         case .Error, .Fatal:
-            bindings.system.error(output_cstr)
+            system.error(output_cstr)
     }
 }
 
@@ -169,10 +167,7 @@ playdate_assertion_failure_proc :: proc (prefix, message: string, loc: runtime.S
         fmt.sbprintf(&sb, ": %s", message)
     }
 
-    fmt.sbprint(&sb, "\n")
-
-    out_cstring := strings.clone_to_cstring(strings.to_string(sb))
-    bindings.system.log_to_console("%s", out_cstring)
+    log.fatal(strings.to_string(sb))
     runtime.trap()
 }
 

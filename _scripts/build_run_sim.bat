@@ -19,7 +19,9 @@ if %ERRORLEVEL% neq 0 (
     exit 1
 )
 
-:: TODO: copy asset directory
+if exist ".\assets\" (
+    robocopy ".\assets\" ".\out_sim\intermediate\assets\" /S /MIR
+)
 
 :: Compile for the Playdate simulator
 %PLAYDATE_SDK_PATH%\bin\pdc out_sim/intermediate/ out_sim/bin/%game_name%.pdx

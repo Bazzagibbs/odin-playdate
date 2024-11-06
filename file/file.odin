@@ -1,19 +1,21 @@
 package playdate_file
 
-import "../bindings"
+import pd ".."
 
-File                :: bindings.File_File
-EOF                 :: bindings.File_EOF
-Result              :: bindings.File_Result
-Open_Modes          :: bindings.File_Open_Modes
-Open_Mode           :: bindings.File_Open_Mode
-Stat                :: bindings.File_Stat
+File                :: pd.File
+EOF                 :: pd.EOF
+Result              :: pd.Result
+Open_Modes          :: pd.Open_Modes
+Open_Mode           :: pd.Open_Mode
+Stat                :: pd.Stat
 
 // * `set`: Seek from beginning of file
 // * `cur`: Seek from current position
 // * `end`: Set file pointer to EOF plus "offset"    
-Seek_Mode           :: bindings.File_Seek_Mode
-List_Files_Callback :: bindings.File_List_Files_Callback
+Seek_Mode           :: pd.Seek_Mode
+List_Files_Callback :: pd.List_Files_Callback
+
+_procs : pd.Api_File_Procs
 
 // =================================================================
 
@@ -22,7 +24,7 @@ List_Files_Callback :: bindings.File_List_Files_Callback
 
 // Returns human-readable text describing the most recent error (usually indicated by a `res == .error` return from a filesystem function).
 get_error  :: proc "contextless" () -> cstring {
-    return cstring(bindings.file.get_error())
+    return cstring(_procs.get_error())
 }
   
 // Calls the given callback function for every file at path. 
@@ -35,18 +37,18 @@ get_error  :: proc "contextless" () -> cstring {
 // 
 // Returns .error if no folder exists at `path` or it can't be opened.
 list_files :: proc "contextless" (path: cstring, callback: List_Files_Callback, user_data: rawptr, show_hidden: b32) -> Result {
-    return bindings.file.list_files(path, callback, user_data, show_hidden)
+    return _procs.list_files(path, callback, user_data, show_hidden)
 }
 
 // Returns a struct `Stat` with information about the file at path.
 stat :: proc "contextless" (path: cstring) -> (file_stat: Stat, res: Result) { 
-    res = bindings.file.stat(path, &file_stat)
+    res = _procs.stat(path, &file_stat)
     return
 }
 
 // Creates the given path in the Data/<gameid> folder. It does not create intermediate folders. 
 mkdir :: proc "contextless" (path: cstring) -> Result {
-    return bindings.file.mkdir(path)
+    return _procs.mkdir(path)
 }
 
 // Deletes the file at `path`. 
@@ -54,12 +56,12 @@ mkdir :: proc "contextless" (path: cstring) -> Result {
 // If `recursive` is true and the target path is a folder, this deletes everything inside the folder 
 // (including folders, folders inside those, and so on) as well as the folder itself.
 unlink :: proc "contextless" (path: cstring, recursive: b32) -> Result {
-    return bindings.file.unlink(path, recursive)
+    return _procs.unlink(path, recursive)
 }
 
 // Renames the file at `from` to `to`. It will overwrite the file at to without confirmation. It does not create intermediate folders. 
 rename :: proc "contextless" (from, to: cstring) -> Result {
-    return bindings.file.rename(from, to)
+    return _procs.rename(from, to)
 }
 
 // Opens a handle for the file at path. 
@@ -71,19 +73,19 @@ rename :: proc "contextless" (from, to: cstring) -> Result {
 //
 // The filesystem has a limit of 64 simultaneous open files.
 open :: proc "contextless" (name: cstring, mode: Open_Modes) -> (file: File) {
-    return bindings.file.open(name, mode)
+    return _procs.open(name, mode)
 }
 
 // Closes the given file handle. 
 close :: proc "contextless" (file: File) -> Result {
-    return bindings.file.close(file)
+    return _procs.close(file)
 }
 
 // Reads bytes from the file into the specified buffer, up to the length of the buffer. 
 //
 // Returns the number of bytes read (0 indicating end of file), or -1 in case of error.
 read :: proc "contextless" (file: File, buffer: []byte) -> (bytes_read: i32) {
-    return bindings.file.read(file, raw_data(buffer), u32(len(buffer)))
+    return _procs.read(file, raw_data(buffer), u32(len(buffer)))
 }
 
 
@@ -91,19 +93,19 @@ read :: proc "contextless" (file: File, buffer: []byte) -> (bytes_read: i32) {
 //
 // Returns the number of bytes written, or -1 in case of error.
 write :: proc "contextless" (file: File, buffer: []byte) -> (bytes_written: i32) {
-    return bindings.file.write(file, raw_data(buffer), u32(len(buffer)))
+    return _procs.write(file, raw_data(buffer), u32(len(buffer)))
 }
 
 // Flushes the output buffer of file immediately. 
 //
 // Returns the number of bytes written, or -1 in case of error.
 flush :: proc "contextless" (file: File) -> (bytes_written: i32) {
-    return bindings.file.flush(file)
+    return _procs.flush(file)
 }
 
 // Returns the current read/write offset in the given file handle, or -1 on error.
 tell :: proc "contextless" (file: File) -> (current_offset: i32) {
-    return bindings.file.tell(file)
+    return _procs.tell(file)
 }
 
 // Sets the read/write offset in the given file handle to `position`, relative to the `whence` seek mode. 
@@ -112,8 +114,18 @@ tell :: proc "contextless" (file: File) -> (current_offset: i32) {
 // * `.cur` is relative to the current position of the file pointer.
 // * `.end` is relative to the end of the file.  
 seek :: proc "contextless" (file: File, position: i32, whence: Seek_Mode) -> Result {
-    return bindings.file.seek(file, position, whence)
+    return _procs.seek(file, position, whence)
 }
 
 
 // =================================================================
+
+@(init, private)
+_register_loader :: proc "contextless" () {
+    pd._loaders[.file] = _load
+}
+
+@(private)
+_load :: proc "contextless" (api: ^pd.Api) {
+    _procs = api.file^
+}
