@@ -23,10 +23,10 @@ pd: ^playdate.Api
 my_load_font :: proc () {
     // C bindings
     err: cstring
-    my_font := pd.graphics.load_font("my/font/path", &out_err)
+    my_font := pd.graphics.load_font("path/to/font", &out_err)
 
     // Odin-style wrapper
-    my_font, err := graphics.load_font("my/font/path")
+    my_font, err := graphics.load_font("path/to/font")
 }
 ```
 
@@ -44,14 +44,14 @@ my_load_font :: proc () {
 
 WIP - Expected to change
 
-Playdate applications are libraries that export the following procedure:
+#### Export the Playdate event handler procedure:
 
 ```odin
 @(export)
 eventHandler :: proc "c" (pd_api: ^playdate.Api, event: playdate.System_Event, arg: u32) -> i32 {}
 ```
 
-Create a context that uses the Playdate's allocator:
+#### Create a context that uses the Playdate's allocator:
 
 ```odin
 import "base:runtime"
@@ -61,7 +61,7 @@ import "core:log"
 global_ctx : runtime.Context
 
 my_init :: proc "contextless" (pd: ^playdate.Api) {
-    global_ctx = playdate.default_context(pd)
+    global_ctx = playdate.playdate_context(pd)
 }
 
 
@@ -72,7 +72,25 @@ update :: proc "c" (user_data: rawptr) -> playdate.Update_Result {
     delete(my_slice)
 
     log.info("Hellope") // logs to Playdate console
+
+    return .update_display
 }
+```
+
+#### Load the Odin-style API (optional):
+
+```odin
+import "playdate"
+import "playdate/graphics"
+
+my_init :: proc "contextless" (pd: ^playdate.Api) {
+    playdate.load_api(pd)
+}
+
+my_load_font :: proc () {
+    my_font, err := graphics.load_font("path/to/font")
+}
+
 ```
 
 From here, follow the official Playdate C guide for Game Initialization.
@@ -81,12 +99,12 @@ From here, follow the official Playdate C guide for Game Initialization.
 
 WIP - Expected to change
 
-### Option A: Build scripts
+#### Option A: Build scripts
 
 1. Copy the build scripts from `playdate/_scripts` to the root directory of your project. 
 2. Add the directories `out_sim` and `out_device` to your .gitignore file.
 
-### Option B: Manual
+#### Option B: Manual
 
 1. Create an intermediate directory that the shared library will be compiled into, and an output directory, e.g. "./intermediate/" and "./out/"
 2. Compile your Odin project into your intermediate directory with the `-build-mode:shared` option (and `-debug` if desired)
