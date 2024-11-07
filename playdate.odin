@@ -90,13 +90,15 @@ Package_ID :: enum {
 }
 
 
-// When a subpackage is imported, it registers a proc to cache its procedure pointers.
-_Loader_Proc :: #type proc "contextless" (api: ^Api)
-_loaders : [Package_ID]_Loader_Proc
+// Excluded for bindings-only releases
+// ===================================
 
-load_api :: proc "contextless" (api: ^Api) {
-    for loader in _loaders {
-        if loader != nil do loader(api)
-    }
-}
-
+// // When a subpackage is imported, it registers a proc to cache its procedure pointers.
+// _Loader_Proc :: #type proc "contextless" (api: ^Api)
+// _loaders : [Package_ID]_Loader_Proc
+//
+// load_api :: proc "contextless" (api: ^Api) {
+//     for loader in _loaders {
+//         if loader != nil do loader(api)
+//     }
+// }

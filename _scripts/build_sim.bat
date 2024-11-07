@@ -12,7 +12,7 @@ if not exist ".\out_sim\intermediate\" mkdir ".\out_sim\intermediate"
 if not exist ".\out_sim\bin\" mkdir ".\out_sim\bin\"
 
 :: Build the game DLL
-odin build . -out:out_sim/intermediate/pdex.dll -build-mode:shared -define:DEFAULT_TEMP_ALLOCATOR_BACKING_SIZE=1048576 %*
+odin build . -out:out_sim/intermediate/pdex.dll -build-mode:shared -define:DEFAULT_TEMP_ALLOCATOR_BACKING_SIZE=1048576 -default-to-nil-allocator %*
 if %ERRORLEVEL% neq 0 (
     echo "Odin build failed"
     exit 1
