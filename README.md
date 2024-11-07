@@ -57,7 +57,24 @@ update :: proc "c" (user_data: rawptr) -> playdate.Update_Result {
 }
 ```
 
+#### Load the Odin-style API (optional):
+
+```odin
+import "playdate"
+import "playdate/graphics"
+
+my_init :: proc "contextless" (pd: ^playdate.Api) {
+    playdate.load_api(pd)
+}
+
+my_load_font :: proc () {
+    my_font, err := graphics.load_font("path/to/font")
+}
+
+```
+
 From here, follow the official Playdate C guide for Game Initialization.
+
 
 ## Compiling for the Playdate
 
@@ -98,16 +115,15 @@ Please feel free to contribute! Here is the current implementation status of eac
 - ➖ Partially implemented (see Notes)
 - ❌ Not implemented
 
-| Package       | C bindings | Tests   | Notes |
-|---------------|:----------:|:-------:|-------|
-| `display`     | ➕         | ❌      |       |
-| `file`        | ➕         | ❌      |       |
-| `graphics`    | ➕         | ❌      |       |
-| `json`        | ➕         | ❌      |       |
-| `lua`         | ➕         | ❌      |       |
-| `scoreboards` | ➕         | ❌      | Only approved games can use Scoreboards API |
-| `sound`       | ➕         | ❌      |       |
-| `sprite`      | ➕         | ❌      |       |
-| `system`      | ➕         | ❌      |       |
-
+| Package       | C bindings | Odin-style wrapper | Tests   | Notes |
+|---------------|:----------:|:------------------:|:-------:|-------|
+| `display`     | ➕         | ➕                 | ❌      |       |
+| `file`        | ➕         | ➕                 | ❌      |       |
+| `graphics`    | ➕         | ➕                 | ❌      |       |
+| `json`        | ➕         | ❌                 | ❌      | Need someone to see if it's functional |
+| `lua`         | ➕         | ❌                 | ❌      | `register_class` is unsafe, See issue #12|
+| `scoreboards` | ➕         | ➕                 | ❌      | Can't test/no documentation - only approved games can use Scoreboards API |
+| `sound`       | ➕         | ❌                 | ❌      |       |
+| `sprite`      | ➕         | ❌                 | ❌      | Sprite update and draw callbacks are contextless. |
+| `system`      | ➕         | ❌                 | ❌      | Documentation comments may be slightly inaccurate, needs double checking |
 
