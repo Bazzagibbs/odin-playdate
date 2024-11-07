@@ -1,36 +1,10 @@
 # Odin-Playdate
 
-##  ⚠️⚠️ WORK IN PROGRESS ⚠️⚠️ Not ready for production
-
 Up to date with Playdate SDK version 2.6
 
 Odin-lang API bindings for the [Playdate SDK](https://play.date/dev/), used to develop games for the Playdate handheld game system.
 
-While this package is documented, the original [C API documentation can be found here](https://sdk.play.date/2.6.0/Inside%20Playdate%20with%20C.html).
-
-## Differences from the C API
-
-This package can be used in the same manner as the C API, or the procedures can be loaded into Odin-style packages.
-
-Note: Odin-style packages are incomplete and subject to breaking changes. If stability is important, use the C API bindings.
-
-```odin
-import "playdate"
-import "playdate/graphics"
-
-pd: ^playdate.Api
-
-my_load_font :: proc () {
-    // C bindings
-    err: cstring
-    my_font := pd.graphics.load_font("path/to/font", &out_err)
-
-    // Odin-style wrapper
-    my_font, err := graphics.load_font("path/to/font")
-}
-```
-
-## Other features
+## Additional features
 
 - Custom allocator for Playdate memory allocations (`new()`, `make()`, etc should work as expected)
 - Custom logger for Playdate logging system (`core:log` procedures should work as expected)
@@ -60,8 +34,14 @@ import "core:log"
 
 global_ctx : runtime.Context
 
+// Call on eventHandler .Init
 my_init :: proc "contextless" (pd: ^playdate.Api) {
-    global_ctx = playdate.playdate_context(pd)
+    global_ctx = playdate.playdate_context_create(pd)
+}
+
+// Call on eventHandler .Terminate
+my_terminate :: proc "contextless" () {
+    playdate.playdate_context_destroy(&global_ctx)
 }
 
 
@@ -75,22 +55,6 @@ update :: proc "c" (user_data: rawptr) -> playdate.Update_Result {
 
     return .Update_Display
 }
-```
-
-#### Load the Odin-style API (optional):
-
-```odin
-import "playdate"
-import "playdate/graphics"
-
-my_init :: proc "contextless" (pd: ^playdate.Api) {
-    playdate.load_api(pd)
-}
-
-my_load_font :: proc () {
-    my_font, err := graphics.load_font("path/to/font")
-}
-
 ```
 
 From here, follow the official Playdate C guide for Game Initialization.
@@ -107,9 +71,9 @@ WIP - Expected to change
 #### Option B: Manual
 
 1. Create an intermediate directory that the shared library will be compiled into, and an output directory, e.g. "./intermediate/" and "./out/"
-2. Compile your Odin project into your intermediate directory with the `-build-mode:shared` option (and `-debug` if desired)
+2. Compile your Odin project into your intermediate directory as a shared library with no default allocators
 ```sh
-odin build . -out=intermediate/pdex.dll -build-mode:shared
+odin build . -out=intermediate/pdex.dll -build-mode:shared -default-to-nil-allocator
 ```
 3. Compile the intermediate directory using the Playdate Compiler, into your output directory
 ```sh
@@ -120,6 +84,11 @@ $PLAYDATE_SDK_PATH/bin/pdc intermediate/ out/Game_Name.pdx
 $PLAYDATE_SDK_PATH/bin/PlaydateSimulator out/Game_Name.pdx
 ```
 
+Note: if you don't need a temporary allocator or you need as much memory as possible, the following Odin build flags are available:
+
+- `-define:NO_PLAYDATE_TEMP_ALLOCATOR` to not create a temporary allocator with `playdate_context_create` (you can provide your own later)
+- `-define:DEFAULT_TEMP_ALLOCATOR_BACKING_SIZE=<n_bytes>` to resize the default temporary allocator arena (default: 4MB, with provided build script: 1MB)
+
 
 ## Contributing
 
@@ -129,19 +98,16 @@ Please feel free to contribute! Here is the current implementation status of eac
 - ➖ Partially implemented (see Notes)
 - ❌ Not implemented
 
-| Package       | C bindings | Odin-style wrapper | Tests   | Notes |
-|---------------|:----------:|:------------------:|:-------:|-------|
-| `display`     | ➕         | ➕                 | ❌      |       |
-| `file`        | ➕         | ➕                 | ❌      |       |
-| `graphics`    | ➕         | ➕                 | ❌      |       |
-| `json`        | ➕         | ❌                 | ❌      | Need someone to see if it's functional |
-| `lua`         | ➕         | ❌                 | ❌      | `register_class` is unsafe, See issue #12|
-| `scoreboards` | ➕         | ➕                 | ❌      | Can't test/no documentation - only approved games can use Scoreboards API |
-| `sound`       | ➕         | ❌                 | ❌      |       |
-| `sprite`      | ➕         | ❌                 | ❌      | Sprite update and draw callbacks are contextless. |
-| `system`      | ➕         | ❌                 | ❌      | Documentation comments may be slightly inaccurate, needs double checking |
+| Package       | C bindings | Tests   | Notes |
+|---------------|:----------:|:-------:|-------|
+| `display`     | ➕         | ❌      |       |
+| `file`        | ➕         | ❌      |       |
+| `graphics`    | ➕         | ❌      |       |
+| `json`        | ➕         | ❌      |       |
+| `lua`         | ➕         | ❌      |       |
+| `scoreboards` | ➕         | ❌      | Only approved games can use Scoreboards API |
+| `sound`       | ➕         | ❌      |       |
+| `sprite`      | ➕         | ❌      |       |
+| `system`      | ➕         | ❌      |       |
 
 
-## Other notes
-
-- `pd->lua->registerClass()` takes two null-terminated arrays as parameters (yuck), I'd like to instead be able to pass slices and enforce the null terminators
