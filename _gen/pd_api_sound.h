@@ -92,7 +92,7 @@ struct playdate_sound_sample
 	AudioSample* (*newSampleBuffer)(int byteCount);
 	int (*loadIntoSample)(AudioSample* sample, const char* path);
 	AudioSample* (*load)(const char* path);
-	AudioSample* (*newSampleFromData)(uint8_t* data, SoundFormat format, uint32_t sampleRate, int byteCount);
+	AudioSample* (*newSampleFromData)(uint8_t* data, SoundFormat format, uint32_t sampleRate, int byteCount, int shouldFreeData);
 	void (*getData)(AudioSample* sample, uint8_t** data, SoundFormat* format, uint32_t* sampleRate, uint32_t* bytelength);
 	void (*freeSample)(AudioSample* sample);
 	float (*getLength)(AudioSample* sample);
@@ -143,6 +143,9 @@ struct playdate_sound_signal
 	float (*getValue)(PDSynthSignal* signal);
 	void (*setValueScale)(PDSynthSignal* signal, float scale);
 	void (*setValueOffset)(PDSynthSignal* signal, float offset);
+
+	// 2.6
+	PDSynthSignal* (*newSignalForValue)(PDSynthSignalValue* value);
 };
 
 #if TARGET_EXTENSION
@@ -287,6 +290,9 @@ struct playdate_sound_synth // PDSynth extends SoundSource
 	// 2.4
 	void (*setGenerator)(PDSynth* synth, int stereo, synthRenderFunc render, synthNoteOnFunc noteOn, synthReleaseFunc release, synthSetParameterFunc setparam, synthDeallocFunc dealloc, synthCopyUserdata copyUserdata, void* userdata);
 	PDSynth* (*copy)(PDSynth* synth);
+	
+	// 2.6
+	void (*clearEnvelope)(PDSynth* synth);
 };
 
 
@@ -377,7 +383,7 @@ struct playdate_sound_sequence
 	uint32_t (*getTime)(SoundSequence* seq);
 	void (*setTime)(SoundSequence* seq, uint32_t time);
 	void (*setLoops)(SoundSequence* seq, int loopstart, int loopend, int loops);
-	int (*getTempo)(SoundSequence* seq);
+	int (*getTempo_deprecated)(SoundSequence* seq);
 	void (*setTempo)(SoundSequence* seq, float stepsPerSecond);
 	int (*getTrackCount)(SoundSequence* seq);
 	SequenceTrack* (*addTrack)(SoundSequence* seq);
@@ -392,6 +398,9 @@ struct playdate_sound_sequence
 	void (*stop)(SoundSequence* seq);
 	int (*getCurrentStep)(SoundSequence* seq, int* timeOffset);
 	void (*setCurrentStep)(SoundSequence* seq, int step, int timeOffset, int playNotes);
+	
+	// 2.5
+	float (*getTempo)(SoundSequence* seq);
 };
 
 

@@ -2,5 +2,14 @@
 *.sublime-project
 *.sublime-workspace
 
+/out
+
+**.pdx
+**.bin
+**.dylib
+**.dylib.dSYM
+**.dll
+**.lib
+**.elf
 **.exe
 **.pdb

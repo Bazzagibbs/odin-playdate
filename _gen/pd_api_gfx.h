@@ -97,6 +97,20 @@ typedef enum
 	kPolygonFillEvenOdd
 } LCDPolygonFillRule;
 
+typedef enum
+{
+	kWrapClip,
+	kWrapCharacter,
+	kWrapWord,
+} PDTextWrappingMode;
+
+typedef enum
+{
+	kAlignTextLeft,
+	kAlignTextCenter,
+	kAlignTextRight
+} PDTextAlignment;
+
 #endif
 
 typedef struct LCDBitmap LCDBitmap;
@@ -127,7 +141,7 @@ struct playdate_graphics
 	void (*clear)(LCDColor color);
 	void (*setBackgroundColor)(LCDSolidColor color);
 	void (*setStencil)(LCDBitmap* stencil); // deprecated in favor of setStencilImage, which adds a "tile" flag
-	void (*setDrawMode)(LCDBitmapDrawMode mode);
+	LCDBitmapDrawMode (*setDrawMode)(LCDBitmapDrawMode mode);
 	void (*setDrawOffset)(int dx, int dy);
 	void (*setClipRect)(int x, int y, int width, int height);
 	void (*clearClipRect)(void);
@@ -209,6 +223,13 @@ struct playdate_graphics
 	// 2.1
 	int (*getTextTracking)(void);
 
+	// 2.5
+	void (*setPixel)(int x, int y, LCDColor c);
+	LCDSolidColor (*getBitmapPixel)(LCDBitmap* bitmap, int x, int y);
+	void (*getBitmapTableInfo)(LCDBitmapTable* table, int* count, int* width);
+	
+	// 2.6
+	void (*drawTextInRect)(const void* text, size_t len, PDStringEncoding encoding, int x, int y, int width, int height, PDTextWrappingMode wrap, PDTextAlignment align);
 };
 
 #endif /* pdext_gfx_h */
