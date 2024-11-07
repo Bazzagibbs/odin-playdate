@@ -6,10 +6,10 @@ Collision_Point :: [2]f32
 Collision_Vector :: [2]i32
 
 Sprite_Collision_Response_Type :: enum {
-    slide,
-    freeze,
-    overlap,
-    bounce,
+    Slide,
+    Freeze,
+    Overlap,
+    Bounce,
 }
 
 // - `sprite`: The sprite being moved.
