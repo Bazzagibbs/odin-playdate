@@ -1,0 +1,49 @@
+package_name = "playdate"
+
+inputs = [ 
+        "pd_api.h",
+        "pd_api",
+]
+
+ignore_inputs = [
+        "bindgen_pd_all.h",
+]
+
+output_folder = ".."
+
+clang_defines = {
+        "TARGET_EXTENSION" = "1",
+}
+
+
+// force_ada_case_types = true
+
+inject_before = {
+        // fix inline callback signatures
+        "playdate_file"             = "ListFilesCallback :: #type proc \"c\" (path: cstring, userdata: rawptr)",
+        "playdate_sound_fileplayer" = "SetMP3StreamSourceCallback :: #type proc \"c\" (data: [^]u8, bytes: c.int, userdata: rawptr) -> c.int",
+        "playdate_sound_lfo"        = "SynthLFOFunc :: #type proc \"c\" (lfo: ^PDSynthLFO, userdata: rawptr) -> f32",
+        "playdate_sound"            = "PDHeadphoneStateChangeCallback :: #type proc \"c\" (headphone: c.int, mic: c.int)",
+        "playdate_sys"              = "PDSerialMessageCallback :: #type proc \"c\" (data: cstring)\n\nPDServerTimeCallback :: #type proc \"c\" (time: cstring, err: cstring)"
+}
+
+struct_field_overrides = {
+        // fix inline callback signatures
+        "playdate_file.listfiles"                      = "proc \"c\" (path: cstring, callback: ListfilesCallback, userdata: rawptr, showhidden: b32) -> c.int",
+        "playdate_sound_fileplayer.setMP3StreamSource" = "proc \"c\" (player: ^FilePlayer, callback: SetMP3StreamSourceCallback, userdata: rawptr, bufferLen: f32) -> c.int",
+        "playdate_sound_lfo.setFunction"               = "proc \"c\" (lfo: ^PDSynthLFO, lfoFunc: synthLFOFunc, userdata: rawptr, interpolate: c.int)",
+        "playdate_sound.getHeadphoneState"             = "proc \"c\" (headphone: ^c.int, headsetmic: ^c.int, changeCallback: HeadphoneStateChangeCallback)",
+        "playdate_sys.setSerialMessageCallback"        = "proc \"c\" (callback: PDSerialMessageCallback)"
+        "playdate_sys.getServerTime"                   = "proc \"c\" (callback: PDServerTimeCallback)"
+
+        // fix varargs
+        "playdate_sys.formatString" = "proc \"c\" (ret: ^cstring, fmt: cstring, #c_vararg args: ..any) -> c.int"
+        "playdate_sys.logToConsole" = "proc \"c\" (fmt: cstring, #c_vararg args: ..any)"
+        "playdate_sys.error"        = "proc \"c\" (fmt: cstring, #c_vararg args: ..any)"
+        "playdate_sys.parseString"  = "proc \"c\" (str: cstring, #c_vararg args: ..any)"
+}
+
+// procedure_type_overrides = {
+// }
+
+// bit_setify = {}

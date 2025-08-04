@@ -4,6 +4,12 @@
 
 /out
 
+# Don't include headers from the pd sdk, provide your own
+/_gen/*.h 
+/_gen/pd_api/ 
+
+/_gen/testgen/
+
 **.pdx
 **.bin
 **.dylib
